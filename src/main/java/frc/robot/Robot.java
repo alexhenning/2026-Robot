@@ -110,55 +110,13 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // Calculate drivetrain commands from Joystick values
-        double forward = RobotContainer.m_driverController.getLeftY() * Constants.DriveConstants.kMaxLinearSpeed;
-        double strafe = -RobotContainer.m_driverController.getLeftX() * Constants.DriveConstants.kMaxLinearSpeed;
-        double turn = -RobotContainer.m_driverController.getRightX() * Constants.DriveConstants.kMaxAngularSpeed;
-
-
-        // Read in relevant data from the Camera
-        boolean targetVisible = false;
-        double targetYaw = 0.0;
-        var results = RobotContainer.rc_visionSS.camera.getAllUnreadResults();
-        
-        if (!results.isEmpty()) {
-          
-            // Camera processed a new frame since last
-            // Get the last one in the list.
-            var result = results.get(results.size() - 1);
-            if (result.hasTargets()) {
-                RobotContainer.rc_visionSS.robotPose = RobotContainer.rc_visionSS.estimateCoprocMultiTagPose(result);
-                // At least one AprilTag was seen by the camera
-                for (var target : result.getTargets()) {
-                  
-                    if (target.getFiducialId() == 7) {
-                        // Found Tag 7, record its information
-                        targetYaw = target.getYaw();
-                        targetVisible = true;
-                    }
-                }
-            } 
-
-        } 
-        // Auto-align when requested
-     //   if (RobotContainer.m_driverController.a().getAsBoolean() && targetVisible) {
-            // Driver wants auto-alignment to tag 7
-            // And, tag 7 is in sight, so we can turn toward it.
-            // Override the driver's turn command with an automatic one that turns toward the tag.
-       //     turn = -1.0 * targetYaw * Constants.VisionConstants.visionTurnKP * Constants.DriveConstants.kMaxAngularSpeed;
-
-          // WILL NEED TO CHANGE VISION TURN KP VALUE IN CONSTANTS
-
-        
-        //climb if requested, and a tag is in sight
-        else if (RobotContainer.m_driverController.povUp().getAsBoolean() == true && targetVisible == true);
-          new ClimbC(RobotContainer.rc_climbSS);
+       
   
         
           // Command drivetrain motors based on target speeds
           //DriveSubsystem.drive(forward, strafe, turn);
 
     //Put debug information to the dashboard
-    SmartDashboard.putBoolean("Vision Target Visible", targetVisible);
     }
 
   @Override
