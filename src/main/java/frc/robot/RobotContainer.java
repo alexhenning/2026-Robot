@@ -10,6 +10,7 @@ import frc.robot.commands.ClimbC;
 import frc.robot.commands.ClimbC;
 import frc.robot.commands.IntakeC;
 import frc.robot.commands.IntakeTiltC;
+import frc.robot.commands.KickerC;
 import frc.robot.commands.LauncherC;
 import frc.robot.commands.LauncherSpeedC;
 import frc.robot.subsystems.*;
@@ -33,11 +34,13 @@ public class RobotContainer {
   public static final IntakeSS rc_intakeSS = new IntakeSS();
   public static final LauncherSS rc_launcherSS = new LauncherSS();
   public static final ClimbSS rc_climbSS = new ClimbSS();
+  public static final KickerSS rc_KickerSS = new KickerSS();
 
   public static final IntakeC rc_intakeC = new IntakeC(rc_intakeSS);
   public static final LauncherC rc_launcherC = new LauncherC(rc_launcherSS);
   public static final LauncherSpeedC rc_launcherspeedC = new LauncherSpeedC(rc_launcherSS, 0.5);
   public static final ClimbC rc_climbC = new ClimbC(rc_climbSS);
+  public static final KickerC rc_KickerC = new KickerC(rc_KickerSS);
 
   public static final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -97,6 +100,8 @@ public class RobotContainer {
 
     m_driverController.a().whileTrue(rc_intakeC);
     m_driverController.b().whileTrue(rc_intakeC);
+    m_driverController.x().whileTrue(rc_KickerC);
+
     //Climb PID
 
     // m_driverController.povUp().onTrue(new LauncherSpeedC(rc_launcherSS, 1));
