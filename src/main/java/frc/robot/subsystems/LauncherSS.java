@@ -44,8 +44,8 @@ public class LauncherSS extends SubsystemBase{
         launcher2.set(0);
     }
 
-    public double calculateLaunchSpeed(double robotpose) {
-      double launchspeed = (0.0184*robotpose + 4.73);
+    public double calculateLaunchSpeed(double robotdistancetotag) {
+      double launchspeed = (0.0184*robotdistancetotag + 4.73);
       return launchspeed;
     }
 

@@ -147,7 +147,7 @@ public static final class ClimbPIDConstants {
 public static double kD;
 public static double kP;
 public static double kI;
-public static int kClimbMotorCANID = 43;
+public static int kClimbMotorCANID = 11;
 public static int kIntakeMotorCANID = 44;
 
 public static final class HubCoords {
