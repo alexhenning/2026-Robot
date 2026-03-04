@@ -34,9 +34,9 @@ public class LauncherSS extends SubsystemBase{
         return speed;
     }
    
-    public void spin() {
-      launcher1.setVoltage(-speed);
-      launcher2.setVoltage(speed);
+    public void spin(double launchspeed) {
+      launcher1.setVoltage(-launchspeed);
+      launcher2.setVoltage(launchspeed);
     }
 
     public void stop(){
@@ -47,6 +47,11 @@ public class LauncherSS extends SubsystemBase{
     public double calculateLaunchSpeed(double robotdistancetotag) {
       double launchspeed = (0.0184*robotdistancetotag + 4.73);
       return launchspeed;
+    }
+
+    public void staticlaunch() {
+      launcher1.setVoltage(-7.4);
+      launcher2.setVoltage(7.4);
     }
 
 }

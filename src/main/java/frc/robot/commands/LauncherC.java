@@ -1,12 +1,26 @@
 package frc.robot.commands;
 
+import java.util.List;
+
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.LauncherSS;
 
 public class LauncherC extends Command {
     public double speed;
+    public PhotonCamera camera = new PhotonCamera("Camera_1");
+    List<PhotonPipelineResult> result = camera.getAllUnreadResults();
+    PhotonTrackedTarget target = result.get(0).getBestTarget();
+    final double targetPitchRadians = target.getPitch();
+    double targetHypotenuse = PhotonUtils.calculateDistanceToTargetMeters(Constants.VisionConstants.cameraHeightMeters, Constants.VisionConstants.targetHeightMeters, Constants.VisionConstants.cameraPitchRadians, targetPitchRadians);
+
 
     public LauncherC(LauncherSS subsystem) {
         subsystem = RobotContainer.rc_launcherSS;
@@ -19,13 +33,8 @@ public class LauncherC extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (RobotContainer.m_driverController.leftBumper().getAsBoolean() == false) {
-            RobotContainer.rc_launcherSS.stop();
-        }
-        else {
-            RobotContainer.rc_launcherSS.spin();
-        }
-              SmartDashboard.putNumber("Launcher Encoder Velocity", -RobotContainer.rc_launcherSS.launcher1.getEncoder().getVelocity());
+        double launchspeed = RobotContainer.rc_launcherSS.calculateLaunchSpeed(targetHypotenuse);
+        RobotContainer.rc_launcherSS.spin(launchspeed);
     }
 
     // Called once the command ends or is interrupted.
