@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ChangeModeC;
 import frc.robot.commands.ClimbC;
 import frc.robot.commands.ClimbC;
 import frc.robot.commands.IntakeC;
@@ -36,6 +37,7 @@ public class RobotContainer {
   public static final LauncherSS rc_launcherSS = new LauncherSS();
   public static final ClimbSS rc_climbSS = new ClimbSS();
   public static final KickerSS rc_KickerSS = new KickerSS();
+  public static final ChangeModeSS rc_changeModeSS = new ChangeModeSS();
 
   public static final IntakeC rc_intakeC = new IntakeC(rc_intakeSS);
   public static final LauncherC rc_launcherC = new LauncherC(rc_launcherSS);
@@ -43,6 +45,7 @@ public class RobotContainer {
   public static final ClimbC rc_climbC = new ClimbC(rc_climbSS);
   public static final KickerC rc_KickerC = new KickerC(rc_KickerSS);
   public static final StaticLauncherC rc_staticLauncherC = new StaticLauncherC(rc_launcherSS);
+  public static final ChangeModeC rc_changeModeC = new ChangeModeC(rc_changeModeSS);
 
   public static final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -91,8 +94,10 @@ public class RobotContainer {
     // Driver controller button commands
     m_driverController.leftStick().whileTrue(m_robotDrive.setXCommand());
     m_driverController.start().onTrue(m_robotDrive.zeroHeadingCommand());
+    m_driverController.a().onTrue(rc_changeModeC);
 
     // Operator controller button commands
+
     m_operatorController.a().whileTrue(rc_climbC);
     m_operatorController.b().whileTrue(rc_climbC);
 
@@ -104,25 +109,25 @@ public class RobotContainer {
     m_operatorController.povDown().whileTrue(rc_intakeC);
     m_operatorController.leftBumper().whileTrue(rc_KickerC);
     m_operatorController.povDown().whileTrue(rc_KickerC);
+      
+    if (rc_changeModeSS.manual == false) {
+      m_operatorController.leftTrigger().whileTrue(rc_staticLauncherC);
+      m_operatorController.rightTrigger().whileTrue(rc_staticLauncherC);
+      m_operatorController.rightBumper().whileTrue(rc_launcherC);
+    }
 
-    m_operatorController.leftTrigger().whileTrue(rc_staticLauncherC);
-    m_operatorController.rightTrigger().whileTrue(rc_staticLauncherC);
-    m_operatorController.rightBumper().whileTrue(rc_launcherC);
+    else if (rc_changeModeSS.manual == true) {
+      m_driverController.povUp().onTrue(new LauncherSpeedC(rc_launcherSS, 1));
+      m_driverController.povDown().onTrue(new LauncherSpeedC(rc_launcherSS, -1));
+      m_driverController.povRight().onTrue(new LauncherSpeedC(rc_launcherSS, 0.1));
+      m_driverController.povLeft().onTrue(new LauncherSpeedC(rc_launcherSS, -0.1));
+      m_driverController.leftTrigger().onTrue(rc_launcherC);
+      m_driverController.rightTrigger().onTrue(rc_launcherC);
+      m_driverController.rightBumper().onTrue(rc_launcherC);
+    }
 
     // Launcher Testing button binds
-    // m_driverController.povUp().onTrue(new LauncherSpeedC(rc_launcherSS, 1));
-    // m_driverController.povDown().onTrue(new LauncherSpeedC(rc_launcherSS, -1));
-    // m_driverController.povRight().onTrue(new LauncherSpeedC(rc_launcherSS, 0.1));
-    // m_driverController.povLeft().onTrue(new LauncherSpeedC(rc_launcherSS, -0.1));
-    // m_driverController.y().onTrue(new LauncherSpeedC(rc_launcherSS, 0.01));
-    // m_driverController.a().onTrue(new LauncherSpeedC(rc_launcherSS, -0.01));
-    // m_driverController.b().onTrue(new LauncherSpeedC(rc_launcherSS, 0.001));
-    // m_driverController.x().onTrue(new LauncherSpeedC(rc_launcherSS, -0.001));
-    // rc_launcherSS.setDefaultCommand(rc_launcherC);
-    //m_driverController.leftTrigger().onTrue(rc_launcherC);
-    //m_driverController.rightTrigger().onTrue(rc_launcherC);
-    //m_driverController.leftBumper().onTrue(rc_launcherC);
-    //m_driverController.rightBumper().onTrue(rc_launcherC);
+    
 
 
   }
