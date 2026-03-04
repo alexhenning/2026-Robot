@@ -46,6 +46,8 @@ public class RobotContainer {
 
   public static final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  public static final CommandXboxController m_operatorController =
+      new CommandXboxController(OperatorConstants.kOperatorControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -86,27 +88,28 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureBindings() {
-        // Driver controller button commands
+    // Driver controller button commands
     m_driverController.leftStick().whileTrue(m_robotDrive.setXCommand());
     m_driverController.start().onTrue(m_robotDrive.zeroHeadingCommand());
-    //Climb PID
 
-    m_driverController.povUp().whileTrue(rc_climbC);
-    m_driverController.povDown().whileTrue(rc_climbC);
+    // Operator controller button commands
+    m_operatorController.a().whileTrue(rc_climbC);
+    m_operatorController.b().whileTrue(rc_climbC);
 
-    m_driverController.povRight().onTrue(new IntakeTiltC(rc_IntakeTiltSS, () -> 10));
-    m_driverController.povLeft().onTrue(new IntakeTiltC(rc_IntakeTiltSS, () -> 0));
+    m_operatorController.povRight().onTrue(new IntakeTiltC(rc_IntakeTiltSS, () -> 10));
+    m_operatorController.povUp().onTrue(new IntakeTiltC(rc_IntakeTiltSS, () -> 5));
+    m_operatorController.povLeft().onTrue(new IntakeTiltC(rc_IntakeTiltSS, () -> 0));
 
-    m_driverController.povRight().whileTrue(rc_intakeC);
-    m_driverController.povLeft().whileTrue(rc_intakeC);
+    m_operatorController.leftBumper().whileTrue(rc_intakeC);
+    m_operatorController.povDown().whileTrue(rc_intakeC);
+    m_operatorController.leftBumper().whileTrue(rc_KickerC);
+    m_operatorController.povDown().whileTrue(rc_KickerC);
 
-    m_driverController.a().whileTrue(rc_intakeC);
-    m_driverController.b().whileTrue(rc_intakeC);
-    m_driverController.x().whileTrue(rc_KickerC);
-    m_driverController.y().whileTrue(rc_staticLauncherC);
+    m_operatorController.leftTrigger().whileTrue(rc_staticLauncherC);
+    m_operatorController.rightTrigger().whileTrue(rc_staticLauncherC);
+    m_operatorController.rightBumper().whileTrue(rc_launcherC);
 
-    //Climb PID
-
+    // Launcher Testing button binds
     // m_driverController.povUp().onTrue(new LauncherSpeedC(rc_launcherSS, 1));
     // m_driverController.povDown().onTrue(new LauncherSpeedC(rc_launcherSS, -1));
     // m_driverController.povRight().onTrue(new LauncherSpeedC(rc_launcherSS, 0.1));

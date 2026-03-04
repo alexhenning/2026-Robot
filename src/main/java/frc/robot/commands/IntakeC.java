@@ -22,10 +22,10 @@ public class IntakeC extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (RobotContainer.m_driverController.povRight().getAsBoolean() == true) {
+    if (RobotContainer.m_driverController.leftBumper().getAsBoolean() == true) {
       RobotContainer.rc_intakeSS.IntakeForward();
     } 
-    else if (RobotContainer.m_driverController.povLeft().getAsBoolean() == true) {
+    else if (RobotContainer.m_driverController.povDown().getAsBoolean() == true) {
         RobotContainer.rc_intakeSS.IntakeReverse();
       }
       else if (RobotContainer.m_driverController.x().getAsBoolean() == true) {

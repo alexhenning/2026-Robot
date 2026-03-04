@@ -16,6 +16,10 @@ public class KickerSS extends SubsystemBase {
         Fuel.set(0.5);
     }
 
+   public void KickerReverse(){
+        Fuel.set(-0.5);
+    }
+
     public void KickerStop() {
         Fuel.set(0);
     }
