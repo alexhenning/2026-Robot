@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import java.util.Optional;
 import java.util.Random;
 import java.util.random.RandomGenerator;
 import frc.robot.commands.*;
@@ -78,10 +80,11 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {}
 
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+  /** This autonomous runs the aut onomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    RobotContainer.rc_visionSS.results.clear();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -99,6 +102,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    RobotContainer.rc_visionSS.results.clear();
+
 
 
     if (m_autonomousCommand != null) {
@@ -121,15 +126,14 @@ public class Robot extends TimedRobot {
         double targetYaw = 0.0;
         var results = RobotContainer.rc_visionSS.camera.getAllUnreadResults();
         
-        if (!results.isEmpty()) {
-          
+        if (RobotContainer.rc_visionSS.results.size() > 0) {
+          System.out.println("bloh");
             // Camera processed a new frame since last
             // Get the last one in the list.
-            var result = results.get(results.size() - 1);
-            if (result.hasTargets()) {
-                RobotContainer.rc_visionSS.robotPose = RobotContainer.rc_visionSS.estimateCoprocMultiTagPose(result);
+            if (RobotContainer.rc_visionSS.result.hasTargets()) {
+                RobotContainer.rc_visionSS.robotPose = RobotContainer.rc_visionSS.estimateCoprocMultiTagPose(RobotContainer.rc_visionSS.result);
                 // At least one AprilTag was seen by the camera
-                for (var target : result.getTargets()) {
+                for (var target : RobotContainer.rc_visionSS.result.getTargets()) {
                   
                     if (target.getFiducialId() == 7) {
                         // Found Tag 7, record its information

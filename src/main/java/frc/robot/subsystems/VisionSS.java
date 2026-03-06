@@ -34,8 +34,16 @@ public class VisionSS extends SubsystemBase{
     public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
     PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
     public Optional<EstimatedRobotPose> robotPose;
-    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+    public List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+    public PhotonPipelineResult result = camera.getLatestResult();
 
+    @Override
+    public void periodic() {
+        results = camera.getAllUnreadResults();
+        if (!results.isEmpty()) {
+            result = results.get(results.size() - 1);
+        }
+    }
 
     public Optional<EstimatedRobotPose> estimateCoprocMultiTagPose(PhotonPipelineResult result) {
         if (!result.hasTargets()) {
@@ -45,65 +53,70 @@ public class VisionSS extends SubsystemBase{
     }
 
     public void PrintTarget() {
-        PhotonPipelineResult result;
-        if (results.get(results.size() - 1) != null) {
-            result = results.get(results.size() - 1);
-        }
-        else {
-            result = results.get(results.size());
-        }
+        // PhotonPipelineResult result;
+
+
+        // result = results.get(
+        //     if ((results.size()) > 0) {
+        //         0;
+        //     }
+        // );
+
+        // if (results.isEmpty() == false) {
+        //     result = results.get(0);
+        // }
+        // else {
+        //     result = PhotonPipelineResult.class.cast(results);
+        // }
+
         //Latest result from camera
         // List<PhotonPipelineResult> results = camera.getAllUnreadResults();
         System.out.println("Number of results: " + results.size());
+        System.out.println("Is it seeing anything? " + results);
 
         //Check for targets within latest result
-        if (results.isEmpty() || !results.get(0).hasTargets()) {
+        if (results.isEmpty()) {
             System.out.println("No targets");
             Boolean targetVisible = false;
             SmartDashboard.putBoolean("Vision Target Visible", targetVisible);
-            return;
         }
-        //boolean hasTargets = result.hasTargets();
-        //Get the best target
-        PhotonTrackedTarget target = results.get(0).getBestTarget();
+        else {
+            //boolean hasTargets = result.hasTargets();
+            //Get the best target
+            PhotonTrackedTarget target = results.get(0).getBestTarget();
 
-        final double targetPitchRadians = target.getPitch();
-        //Get location information from target
-        if (target != null) {   
-            Boolean targetVisible = true;
-            double yaw = target.getYaw();
-            double pitch = target.getPitch();
-            double area = target.getArea();
-            double skew = target.getSkew();
-            List<TargetCorner> corners = target.getDetectedCorners();
-            //Get Apriltag data and more information
-            int targetID = target.getFiducialId();
-            double poseAmbiguity = target.getPoseAmbiguity();
-            Transform3d bestCameraToTarget = target.getBestCameraToTarget();
-            Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
-            double targetHypotenuse = PhotonUtils.calculateDistanceToTargetMeters(Constants.VisionConstants.cameraHeightMeters, Constants.VisionConstants.targetHeightMeters, Constants.VisionConstants.cameraPitchRadians, targetPitchRadians);
-            //camera height and target height must be changed at a later date
-            double targetxdistance = Math.sqrt((targetHypotenuse*targetHypotenuse) - (Constants.VisionConstants.targetHeightMeters*Constants.VisionConstants.targetHeightMeters));
+            final double targetPitchRadians = target.getPitch();
+            //Get location information from target
+            if (target != null) {   
+                Boolean targetVisible = true;
+                double yaw = target.getYaw();
+                double pitch = target.getPitch();
+                double area = target.getArea();
+                double skew = target.getSkew();
+                List<TargetCorner> corners = target.getDetectedCorners();
+                //Get Apriltag data and more information
+                int targetID = target.getFiducialId();
+                double poseAmbiguity = target.getPoseAmbiguity();
+                Transform3d bestCameraToTarget = target.getBestCameraToTarget();
+                Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
+                double targetHypotenuse = PhotonUtils.calculateDistanceToTargetMeters(Constants.VisionConstants.cameraHeightMeters, Constants.VisionConstants.targetHeightMeters, Constants.VisionConstants.cameraPitchRadians, targetPitchRadians);
+                //camera height and target height must be changed at a later date
+                double targetxdistance = Math.sqrt((targetHypotenuse*targetHypotenuse) - (Constants.VisionConstants.targetHeightMeters*Constants.VisionConstants.targetHeightMeters));
 
-            RobotContainer.rc_visionSS.robotPose = RobotContainer.rc_visionSS.estimateCoprocMultiTagPose(result);
-            System.out.println(targetID);
-            //System.out.println(targetHypotenuse);
-            //System.out.println(targetxdistance);
-            System.out.println(robotPose);
-            try {
-                TimeUnit.SECONDS.sleep(10);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }             
-            SmartDashboard.putBoolean("Vision Target Visible", targetVisible);
+                RobotContainer.rc_visionSS.robotPose = RobotContainer.rc_visionSS.estimateCoprocMultiTagPose(result);
+                System.out.println(targetID);
+                //System.out.println(targetHypotenuse);
+                //System.out.println(targetxdistance);
+                System.out.println(robotPose);
+                SmartDashboard.putBoolean("Vision Target Visible", targetVisible);
 
-            // Capture pre-process camera stream image
-            camera.takeInputSnapshot();
+                // Capture pre-process camera stream image
+                camera.takeInputSnapshot();
 
-            // Capture post-process camera stream image
-            camera.takeOutputSnapshot();
-        } 
+                // Capture post-process camera stream image
+                camera.takeOutputSnapshot();
+            } 
+        }
     }
 
     public Optional<EstimatedRobotPose> getRobotPose() {

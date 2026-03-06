@@ -20,7 +20,7 @@ public class LauncherC extends Command {
     double targetHypotenuse = 1;
 
     public final double getDistance() {
-        if (results.size() <= 1) {
+        if (results.size() > 0) {
             final double targetPitchRadians = target.getPitch();
             targetHypotenuse = PhotonUtils.calculateDistanceToTargetMeters(Constants.VisionConstants.cameraHeightMeters, Constants.VisionConstants.targetHeightMeters, Constants.VisionConstants.cameraPitchRadians, targetPitchRadians);
         } 
