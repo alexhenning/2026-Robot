@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.*;
 
 
 public class RobotContainer {
@@ -34,6 +35,13 @@ public class RobotContainer {
   public static final VisionSS rc_visionSS = new VisionSS();
   public static final IntakeTiltSS rc_IntakeTiltSS = new IntakeTiltSS();
   public static final IntakeSS rc_intakeSS = new IntakeSS();
+<<<<<<< HEAD
+  public static final KickerSS rc_KickerSS = new KickerSS();
+  /// ???? public static final ClimbPIDSS rc_pidSS = new ClimbPIDSS();
+  
+  public static final IntakeC rc_intakeC = new IntakeC(rc_intakeSS);
+  public static final KickerC rc_KickerC = new KickerC(rc_KickerSS);
+=======
   public static final LauncherSS rc_launcherSS = new LauncherSS();
   public static final ClimbSS rc_climbSS = new ClimbSS();
   public static final KickerSS rc_KickerSS = new KickerSS();
@@ -47,6 +55,7 @@ public class RobotContainer {
   public static final StaticLauncherC rc_staticLauncherC = new StaticLauncherC(rc_launcherSS);
   public static final ChangeModeC rc_changeModeC = new ChangeModeC(rc_changeModeSS);
 
+>>>>>>> 6c1d4a50f7f29e43e5f3b01a6d84f32fa4aa5938
   public static final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
   public static final CommandXboxController m_operatorController =
@@ -131,6 +140,8 @@ public class RobotContainer {
     // Launcher Testing button binds
     
 
+
+    m_driverController.x().whileTrue(rc_KickerC);
 
   }
 

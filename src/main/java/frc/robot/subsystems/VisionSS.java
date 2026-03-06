@@ -85,9 +85,10 @@ public class VisionSS extends SubsystemBase{
             //Get the best target
             PhotonTrackedTarget target = results.get(0).getBestTarget();
 
-            final double targetPitchRadians = target.getPitch();
+            //final double targetPitchRadians = target.getPitch();
             //Get location information from target
             if (target != null) {   
+                final double targetPitchRadians = target.getPitch();
                 Boolean targetVisible = true;
                 double yaw = target.getYaw();
                 double pitch = target.getPitch();
