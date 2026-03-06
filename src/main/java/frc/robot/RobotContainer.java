@@ -109,6 +109,8 @@ public class RobotContainer {
     m_operatorController.leftBumper().whileTrue(rc_intakeC);
     m_operatorController.povDown().whileTrue(rc_intakeC);
     m_operatorController.leftBumper().whileTrue(rc_KickerC);
+    m_operatorController.rightTrigger().whileTrue(rc_KickerC);
+    m_operatorController.leftTrigger().whileTrue(rc_KickerC);
     m_operatorController.povDown().whileTrue(rc_KickerC);
       
     if (rc_changeModeSS.manual == false) {

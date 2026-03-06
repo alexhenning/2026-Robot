@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
@@ -14,7 +15,7 @@ import frc.robot.Constants;
 
 public class IntakeTiltSS extends SubsystemBase {
 
-  public final SparkMax Motor1 = new SparkMax(Constants.CANIDConstants.kIntakeTiltMotorCANID, MotorType.kBrushless);
+  public final SparkFlex Motor1 = new SparkFlex(Constants.CANIDConstants.kIntakeTiltMotorCANID, MotorType.kBrushless);
 
   private final PIDController Velo_PID = new PIDController(Constants.kP, Constants.kI, Constants.kD);
   private final PIDController Pos_PID = new PIDController(Constants.kP, Constants.kI, Constants.kD);

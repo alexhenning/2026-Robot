@@ -44,8 +44,8 @@ public final class Constants {
     public static final int kFrontRightTurningCanId = 4;
     public static final int kRearRightTurningCanId = 8;
 
-    public static int kClimbMotorCANID = 15;
-    public static int kIntakeTiltMotorCANID = 16;
+    public static int kClimbMotorCANID = 16;
+    public static int kIntakeTiltMotorCANID = 15;
   }
 
   public static final class DriveConstants {

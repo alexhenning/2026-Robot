@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import frc.robot.Constants;
@@ -10,8 +11,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class KickerSS extends SubsystemBase {
   /** Creates a new AlgaeC. */
-    public final SparkMax Kicker = new SparkMax(Constants.CANIDConstants.KickerCANID, MotorType.kBrushless);
-    public final SparkMax KickerBelt = new SparkMax(Constants.CANIDConstants.KickerBeltCANID, MotorType.kBrushless);
+    public final SparkFlex Kicker = new SparkFlex(Constants.CANIDConstants.KickerCANID, MotorType.kBrushless);
+    public final SparkFlex KickerBelt = new SparkFlex(Constants.CANIDConstants.KickerBeltCANID, MotorType.kBrushless);
 
   
 

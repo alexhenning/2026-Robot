@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import frc.robot.Constants;
 
@@ -9,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSS extends SubsystemBase {
   /** Creates a new AlgaeC. */
-  public final SparkMax Intake1 = new SparkMax(Constants.CANIDConstants.IntakeSpinCANID, MotorType.kBrushless);
+  public final SparkFlex Intake1 = new SparkFlex(Constants.CANIDConstants.IntakeSpinCANID, MotorType.kBrushless);
 
     public void IntakeForward(){
         Intake1.set(0.5);
