@@ -18,11 +18,11 @@ public class IntakeTiltSS extends SubsystemBase {
   public final SparkFlex Motor1 = new SparkFlex(Constants.CANIDConstants.kIntakeTiltMotorCANID, MotorType.kBrushless);
 
   public void spin() {
-    Motor1.set(0.2);
+    Motor1.set(0.4);
   }
 
   public void reverse() {
-    Motor1.set(-0.2);
+    Motor1.set(-0.4);
   }
  
   public void stop() {
