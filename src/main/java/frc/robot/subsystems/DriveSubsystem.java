@@ -30,32 +30,33 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.CANIDConstants;
 import frc.robot.Constants.DriveConstants;
 public class DriveSubsystem extends SubsystemBase {
 
   // Create MAXSwerveModules
   public final MAXSwerveModule m_frontLeft = 
       new MAXSwerveModule(
-          DriveConstants.kFrontLeftDrivingCanId,
-          DriveConstants.kFrontLeftTurningCanId,
+          CANIDConstants.kFrontLeftDrivingCanId,
+          CANIDConstants.kFrontLeftTurningCanId,
           DriveConstants.kFrontLeftChassisAngularOffset);
 
   public final MAXSwerveModule m_frontRight =
       new MAXSwerveModule(
-          DriveConstants.kFrontRightDrivingCanId,
-          DriveConstants.kFrontRightTurningCanId,
+          CANIDConstants.kFrontRightDrivingCanId,
+          CANIDConstants.kFrontRightTurningCanId,
           DriveConstants.kFrontRightChassisAngularOffset);
 
   public final MAXSwerveModule m_rearLeft =
       new MAXSwerveModule(
-          DriveConstants.kRearLeftDrivingCanId,
-          DriveConstants.kRearLeftTurningCanId,
+          CANIDConstants.kRearLeftDrivingCanId,
+          CANIDConstants.kRearLeftTurningCanId,
           DriveConstants.kBackLeftChassisAngularOffset);
 
   public final MAXSwerveModule m_rearRight =
       new MAXSwerveModule(
-          DriveConstants.kRearRightDrivingCanId,
-          DriveConstants.kRearRightTurningCanId,
+          CANIDConstants.kRearRightDrivingCanId,
+          CANIDConstants.kRearRightTurningCanId,
           DriveConstants.kBackRightChassisAngularOffset);
 
 

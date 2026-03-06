@@ -12,8 +12,8 @@ public class LauncherSS extends SubsystemBase{
 
     public double speed = 8;
 
-    public static final SparkMax launcher1 = new SparkMax(Constants.LauncherConstants.launcher1CANID, MotorType.kBrushless);
-    public static final SparkMax launcher2 = new SparkMax(Constants.LauncherConstants.launcher2CANID, MotorType.kBrushless);
+    public static final SparkMax launcher1 = new SparkMax(Constants.CANIDConstants.launcher1CANID, MotorType.kBrushless);
+    public static final SparkMax launcher2 = new SparkMax(Constants.CANIDConstants.launcher2CANID, MotorType.kBrushless);
 
 
     // launcher at 0.675 gets it in from 170

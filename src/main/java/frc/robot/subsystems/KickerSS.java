@@ -10,17 +10,24 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class KickerSS extends SubsystemBase {
   /** Creates a new AlgaeC. */
-  public final SparkMax Fuel = new SparkMax(Constants.KickerCANID, MotorType.kBrushless);
+    public final SparkMax Kicker = new SparkMax(Constants.CANIDConstants.KickerCANID, MotorType.kBrushless);
+    public final SparkMax KickerBelt = new SparkMax(Constants.CANIDConstants.KickerBeltCANID, MotorType.kBrushless);
+
+  
 
     public void KickerForward(){
-        Fuel.set(0.5);
+        Kicker.set(0.5);
+        KickerBelt.set(-0.5);
     }
 
    public void KickerReverse(){
-        Fuel.set(-0.5);
+        Kicker.set(-0.5);
+        KickerBelt.set(0.5);
+
     }
 
     public void KickerStop() {
-        Fuel.set(0);
+        Kicker.set(0);
+        KickerBelt.set(0);
     }
 }

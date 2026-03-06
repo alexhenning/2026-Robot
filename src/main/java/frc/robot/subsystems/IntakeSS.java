@@ -9,17 +9,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSS extends SubsystemBase {
   /** Creates a new AlgaeC. */
-  public final SparkMax Fuel = new SparkMax(Constants.IntakeCANID, MotorType.kBrushless);
+  public final SparkMax Intake1 = new SparkMax(Constants.CANIDConstants.IntakeSpinCANID, MotorType.kBrushless);
 
     public void IntakeForward(){
-        Fuel.set(0.5);
+        Intake1.set(0.5);
     }
 
     public void IntakeReverse() {
-        Fuel.set(-0.5);
-    }
+        Intake1.set(-0.5);
 
+    }
+    
     public void IntakeStop() {
-        Fuel.set(0);
+        Intake1.set(0);
     }
 }

@@ -8,7 +8,7 @@ import frc.robot.Constants;
 
 public class ClimbSS extends SubsystemBase {
 
-    public final SparkFlex climbmotor = new SparkFlex(Constants.kClimbMotorCANID, MotorType.kBrushless);
+    public final SparkFlex climbmotor = new SparkFlex(Constants.CANIDConstants.kClimbMotorCANID, MotorType.kBrushless);
     
     public void spin() {
         climbmotor.set(0.5);

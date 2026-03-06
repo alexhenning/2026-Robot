@@ -16,8 +16,7 @@ public final class Constants {
 
     
   }
-    public static final int IntakeCANID = 46;
-    public static final int KickerCANID = 45;
+
 
   public static class VisionConstants {
     public static final double visionTurnKP = 0;
@@ -28,9 +27,25 @@ public final class Constants {
 
   }
 
-  public static class LauncherConstants {
+  public static class CANIDConstants {
     public static final int launcher1CANID = 9;
     public static final int launcher2CANID = 10;
+    public static final int IntakeSpinCANID = 11;
+    public static final int KickerCANID = 13;
+    public static final int KickerBeltCANID = 14;
+    
+    public static final int kFrontLeftDrivingCanId = 1;
+    public static final int kRearLeftDrivingCanId = 5;
+    public static final int kFrontRightDrivingCanId = 3;  
+    public static final int kRearRightDrivingCanId = 7;
+
+    public static final int kFrontLeftTurningCanId = 2;
+    public static final int kRearLeftTurningCanId = 6;
+    public static final int kFrontRightTurningCanId = 4;
+    public static final int kRearRightTurningCanId = 8;
+
+    public static int kClimbMotorCANID = 15;
+    public static int kIntakeTiltMotorCANID = 16;
   }
 
   public static final class DriveConstants {
@@ -58,17 +73,6 @@ public final class Constants {
     public static final double kFrontRightChassisAngularOffset = 0;
     public static final double kBackLeftChassisAngularOffset = Math.PI;
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
-
-    // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 1;
-    public static final int kRearLeftDrivingCanId = 5;
-    public static final int kFrontRightDrivingCanId = 3;  
-    public static final int kRearRightDrivingCanId = 7;
-
-    public static final int kFrontLeftTurningCanId = 2;
-    public static final int kRearLeftTurningCanId = 6;
-    public static final int kFrontRightTurningCanId = 4;
-    public static final int kRearRightTurningCanId = 8;
 
     public static final boolean kGyroReversed = false;
   }
@@ -148,8 +152,7 @@ public static final class ClimbPIDConstants {
 public static double kD;
 public static double kP;
 public static double kI;
-public static int kClimbMotorCANID = 11;
-public static int kIntakeMotorCANID = 44;
+
 
 public static final class HubCoords {
   public static double redHubX = 468.565 / 12;
