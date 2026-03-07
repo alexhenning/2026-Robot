@@ -50,7 +50,8 @@ public class VisionSS extends SubsystemBase{
             // Get the last one in the list.
             if (result.hasTargets()) {
                 System.out.println("Has Target");
-                robotPose = photonEstimator.estimateCoprocMultiTagPose(result);
+                robotPose = photonEstimator.estimateCoprocMultiTagPose(result)
+                                .or(() -> photonEstimator.estimateLowestAmbiguityPose(result));
                 System.out.println(robotPose);
                 // At least one AprilTag was seen by the camera
                 for (var target : result.getTargets()) {
