@@ -124,29 +124,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putBoolean("Manual Enabled? ", RobotContainer.rc_changeModeSS.manual);
 
 
-        // Read in relevant data from the Camera
-        // boolean targetVisible = false;
-        // double targetYaw = 0.0;
-        // var results = RobotContainer.rc_visionSS.camera.getAllUnreadResults();
-        
-        // if (RobotContainer.rc_visionSS.results.size() > 0) {
-        //   System.out.println("bloh");
-        //     // Camera processed a new frame since last
-        //     // Get the last one in the list.
-        //     if (RobotContainer.rc_visionSS.result.hasTargets()) {
-        //         RobotContainer.rc_visionSS.robotPose = RobotContainer.rc_visionSS.estimateCoprocMultiTagPose(RobotContainer.rc_visionSS.result);
-        //         // At least one AprilTag was seen by the camera
-        //         for (var target : RobotContainer.rc_visionSS.result.getTargets()) {
-                  
-        //             if (target.getFiducialId() == 7) {
-        //                 // Found Tag 7, record its information
-        //                 targetYaw = target.getYaw();
-        //                 targetVisible = true;
-        //             }
-        //         }
-        //     } 
 
-        // } 
         // Auto-align when requested
      //   if (RobotContainer.m_driverController.a().getAsBoolean() && targetVisible) {
             // Driver wants auto-alignment to tag 7

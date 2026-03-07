@@ -23,7 +23,7 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   private static final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  //public static final VisionSS rc_visionSS = new VisionSS();
+  public static final VisionSS rc_visionSS = new VisionSS();
   public static final IntakeTiltSS rc_IntakeTiltSS = new IntakeTiltSS();
   public static final IntakeSS rc_intakeSS = new IntakeSS();
   public static final LauncherSS rc_launcherSS = new LauncherSS();
