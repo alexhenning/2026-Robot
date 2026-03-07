@@ -17,74 +17,86 @@ public class IntakeTiltSS extends SubsystemBase {
 
   public final SparkFlex Motor1 = new SparkFlex(Constants.CANIDConstants.kIntakeTiltMotorCANID, MotorType.kBrushless);
 
-  private final PIDController Velo_PID = new PIDController(Constants.kP, Constants.kI, Constants.kD);
-  private final PIDController Pos_PID = new PIDController(Constants.kP, Constants.kI, Constants.kD);
+  public void spin() {
+    Motor1.set(0.4);
+  }
 
-  private boolean manual = true;
-
-  private double desiredVelocity;
-  private double desiredPosition;
-
-  private double voltage;
-
-  public void ElevStop() {
+  public void reverse() {
+    Motor1.set(-0.4);
+  }
+ 
+  public void stop() {
     Motor1.set(0);
   }
 
-  public void ElevZero() {
-    Motor1.set(-0.3);
-  }
+  // private final PIDController Velo_PID = new PIDController(Constants.kP, Constants.kI, Constants.kD);
+  // private final PIDController Pos_PID = new PIDController(Constants.kP, Constants.kI, Constants.kD);
 
-  public void PIDSS() {
-    Motor1.setInverted(true);
-    Motor1.getEncoder().setPosition(0);
-  }
+  // private boolean manual = true;
 
-  @Override
-  public void periodic() {
-    SmartDashboard.putNumber("Elevator Position", getPosition());
-    SmartDashboard.putNumber("Desired Elevator Velocity", desiredVelocity);
-    SmartDashboard.putNumber("Elevator Voltage", getVoltage());
+  // private double desiredVelocity;
+  // private double desiredPosition;
 
-    setVoltage();
-  }
+  // private double voltage;
 
-  public void setVoltage() {
-    double PIDVoltage;
-    if (manual) { // Calculate position, if it is the position, stop the arm
-      PIDVoltage = Velo_PID.calculate(getVelocity(), desiredVelocity);
-    } else {
-      // Otherwise try to go to the position
-      double PIDVelocity = Pos_PID.calculate(getPosition(), desiredPosition);
-      PIDVoltage = Velo_PID.calculate(getVelocity(), PIDVelocity);
-      // double feedforwardVoltage = feedforward.calculate(getPosition(), 10);
-      // PIDVoltage = PIDVoltage + feedforwardVoltage;
-    }
+  // public void ElevStop() {
+  //   Motor1.set(0);
+  // }
 
-    voltage = PIDVoltage;
+  // public void ElevZero() {
+  //   Motor1.set(-0.3);
+  // }
 
-    Motor1.setVoltage(PIDVoltage);
-  }
+  // public void PIDSS() {
+  //   Motor1.setInverted(true);
+  //   Motor1.getEncoder().setPosition(0);
+  // }
 
-  public double getVoltage() {
-    return voltage;
-  }
+  // @Override
+  // public void periodic() {
+  //   SmartDashboard.putNumber("Elevator Position", getPosition());
+  //   SmartDashboard.putNumber("Desired Elevator Velocity", desiredVelocity);
+  //   SmartDashboard.putNumber("Elevator Voltage", getVoltage());
 
-  public void setVelocity(double degreesPerSecond) {
-    manual = true;
-    desiredVelocity = degreesPerSecond;
-  }
+  //   setVoltage();
+  // }
 
-  public void setPosition(double degrees) {
-    manual = false;
-    desiredPosition = degrees;
-  }
+  // public void setVoltage() {
+  //   double PIDVoltage;
+  //   if (manual) { // Calculate position, if it is the position, stop the arm
+  //     PIDVoltage = Velo_PID.calculate(getVelocity(), desiredVelocity);
+  //   } else {
+  //     // Otherwise try to go to the position
+  //     double PIDVelocity = Pos_PID.calculate(getPosition(), desiredPosition);
+  //     PIDVoltage = Velo_PID.calculate(getVelocity(), PIDVelocity);
+  //     // double feedforwardVoltage = feedforward.calculate(getPosition(), 10);
+  //     // PIDVoltage = PIDVoltage + feedforwardVoltage;
+  //   }
 
-  public double getPosition() {
-    return Motor1.getEncoder().getPosition() * 8;
-  }
+  //   voltage = PIDVoltage;
 
-  public double getVelocity() {
-    return Motor1.getEncoder().getVelocity() * (2 / 15);
-  }
+  //   Motor1.setVoltage(PIDVoltage);
+  // }
+
+  // public double getVoltage() {
+  //   return voltage;
+  // }
+
+  // public void setVelocity(double degreesPerSecond) {
+  //   manual = true;
+  //   desiredVelocity = degreesPerSecond;
+  // }
+
+  // public void setPosition(double degrees) {
+  //   manual = false;
+  //   desiredPosition = degrees;
+  // }
+
+  // public double getPosition() {
+  //   return Motor1.getEncoder().getPosition() * 8;
+  // }
+
+  // public double getVelocity() {
+  //   return Motor1.getEncoder().getVelocity() * (2 / 15);
+  // }
 }

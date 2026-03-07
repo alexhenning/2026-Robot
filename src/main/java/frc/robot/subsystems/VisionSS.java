@@ -104,7 +104,7 @@ public class VisionSS extends SubsystemBase{
                 //camera height and target height must be changed at a later date
                 double targetxdistance = Math.sqrt((targetHypotenuse*targetHypotenuse) - (Constants.VisionConstants.targetHeightMeters*Constants.VisionConstants.targetHeightMeters));
 
-                RobotContainer.rc_visionSS.robotPose = RobotContainer.rc_visionSS.estimateCoprocMultiTagPose(result);
+                robotPose = estimateCoprocMultiTagPose(result);
                 System.out.println(targetID);
                 //System.out.println(targetHypotenuse);
                 //System.out.println(targetxdistance);

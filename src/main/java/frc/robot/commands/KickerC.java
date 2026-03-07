@@ -18,11 +18,11 @@ public class KickerC extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (RobotContainer.m_driverController.leftBumper().getAsBoolean()) {
-      RobotContainer.rc_KickerSS.KickerForward();
+    if (RobotContainer.m_operatorController.leftTrigger().getAsBoolean()) {
+      RobotContainer.rc_KickerSS.KickerReverse();
     }
     else {
-      RobotContainer.rc_KickerSS.KickerReverse();
+      RobotContainer.rc_KickerSS.KickerForward();
     }
    
   }
