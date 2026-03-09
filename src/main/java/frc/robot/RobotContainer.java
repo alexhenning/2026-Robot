@@ -48,7 +48,7 @@ public class RobotContainer {
   public static final ManualLauncherC rc_manualLauncherC = new ManualLauncherC(rc_launcherSS);
 
   public static final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    new CommandXboxController(OperatorConstants.kDriverControllerPort);
   public static final CommandXboxController m_operatorController =
       new CommandXboxController(OperatorConstants.kOperatorControllerPort);
 
@@ -65,7 +65,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Shoot", new LauncherSetSpeedForDistance(rc_launcherSS, rc_KickerSS, 7.6));
     NamedCommands.registerCommand("Kicker", rc_KickerC);
-    
+
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
