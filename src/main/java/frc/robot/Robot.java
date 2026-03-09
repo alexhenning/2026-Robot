@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -83,6 +85,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the aut onomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    Optional<Alliance> ally = DriverStation.getAlliance();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     //RobotContainer.rc_visionSS.results.clear();
 
@@ -104,6 +107,7 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     
     //RobotContainer.rc_visionSS.results.clear();
+    
 
 
 

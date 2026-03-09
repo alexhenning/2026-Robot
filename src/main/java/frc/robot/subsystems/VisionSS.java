@@ -57,7 +57,7 @@ public class VisionSS extends SubsystemBase{
 
                 if (robotPose.isPresent()) {
                 EstimatedRobotPose estimatedRobotPose = robotPose.get();
-                Pose3d myRobotPose3d = estimatedRobotPose.estimatedPose;
+                Pose3d myRobotPose3d = estimatedRobotPose.estimatedPose.times(39.3700787402);
                 System.out.println(myRobotPose3d);
                 }
                 System.out.println(robotPose);
