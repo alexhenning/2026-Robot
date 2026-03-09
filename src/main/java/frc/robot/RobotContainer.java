@@ -8,10 +8,14 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.*;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -20,6 +24,8 @@ import frc.robot.commands.*;
 
 
 public class RobotContainer {
+  
+  private final SendableChooser<Command> autoChooser;
 
   // The robot's subsystems and commands are defined here...
   private static final DriveSubsystem m_robotDrive = new DriveSubsystem();
@@ -56,6 +62,13 @@ public class RobotContainer {
             
     //   )
     // );
+
+    NamedCommands.registerCommand("Shoot", new LauncherSetSpeedForDistance(rc_launcherSS, rc_KickerSS, 7.6));
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
+
     // Configure the trigger bindings
     configureBindings();
     // Configure default commands
@@ -76,6 +89,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     // Configure default commands
+
 
   }
   /**
@@ -138,6 +152,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     System.out.println("getAutonomousCommand");
-    return new PathPlannerAuto("Test Auto");
+    return autoChooser.getSelected();
   }
 }
