@@ -40,6 +40,8 @@ import frc.robot.RobotContainer;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
+  public static String alliance;
+
   private final RobotContainer m_robotContainer;
 
 
@@ -87,6 +89,9 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     Optional<Alliance> ally = DriverStation.getAlliance();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    if (ally.get() == Alliance.Red) {alliance = "red";}
+    else if (ally.get() == Alliance.Red) {alliance = "blue";}
     //RobotContainer.rc_visionSS.results.clear();
 
     // schedule the autonomous command (example)
@@ -107,6 +112,11 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     
     //RobotContainer.rc_visionSS.results.clear();
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    if (ally.get() == Alliance.Red) {alliance = "red";}
+    else if (ally.get() == Alliance.Red) {alliance = "blue";}
     
 
 

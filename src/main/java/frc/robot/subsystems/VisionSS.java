@@ -1,6 +1,6 @@
 //Apriltag detecting camera will be placed on shooter side to detect shooter tags and climber tags
 package frc.robot.subsystems;
-
+import frc.robot.*;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Optional;
@@ -25,10 +25,9 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.RobotContainer;
 
 public class VisionSS extends SubsystemBase{
     public PhotonCamera camera = new PhotonCamera("Camera_1");
@@ -58,7 +57,19 @@ public class VisionSS extends SubsystemBase{
                 if (robotPose.isPresent()) {
                 EstimatedRobotPose estimatedRobotPose = robotPose.get();
                 Pose3d myRobotPose3d = estimatedRobotPose.estimatedPose.times(39.3700787402);
+                Pose2d myRobotPose2d = myRobotPose3d.toPose2d();
                 System.out.println(myRobotPose3d);
+                System.out.println(myRobotPose2d);
+                double x = myRobotPose2d.getX();
+                double y = myRobotPose2d.getY();
+                    if (Robot.alliance == "blue") {
+                        double distanceToHub = Math.sqrt((x - Constants.HubCoords.blueHubX)*(x - Constants.HubCoords.blueHubX)+(y - Constants.HubCoords.blueHubY)*(y - Constants.HubCoords.blueHubY));
+                        System.out.println(distanceToHub);
+                    }
+                    else if (Robot.alliance == "red") {
+                        double distanceToHub = Math.sqrt((x - Constants.HubCoords.redHubX)*(x - Constants.HubCoords.redHubX)+(y - Constants.HubCoords.redHubY)*(y - Constants.HubCoords.redHubY));
+                        System.out.println(distanceToHub);
+                    }
                 }
                 System.out.println(robotPose);
                 // At least one AprilTag was seen by the camera
