@@ -51,7 +51,7 @@ public class LauncherSS extends SubsystemBase{
     }
     
     public void spin(double launchspeed) {
-      SmartDashboard.putNumber("Launcher Voltage", launchspeed);
+      SmartDashboard.putNumber("Launcher Voltage ", launchspeed);
       launcher1.setVoltage(launchspeed);
       launcher2.setVoltage(-launchspeed);
     }

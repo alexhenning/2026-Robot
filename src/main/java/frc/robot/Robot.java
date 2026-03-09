@@ -121,7 +121,6 @@ public class Robot extends TimedRobot {
         double strafe = -RobotContainer.m_driverController.getLeftX() * Constants.DriveConstants.kMaxLinearSpeed;
         double turn = -RobotContainer.m_driverController.getRightX() * Constants.DriveConstants.kMaxAngularSpeed;
 
-        SmartDashboard.putBoolean("Manual Enabled? ", RobotContainer.rc_changeModeSS.manual);
 
 
 
