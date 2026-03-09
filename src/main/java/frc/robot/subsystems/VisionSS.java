@@ -12,12 +12,14 @@ import java.util.Optional;
 
 import org.photonvision.*;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.proto.Photon.ProtobufPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
 
 import edu.wpi.first.apriltag.*;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -52,6 +54,12 @@ public class VisionSS extends SubsystemBase{
                 System.out.println("Has Target");
                 robotPose = photonEstimator.estimateCoprocMultiTagPose(result)
                                 .or(() -> photonEstimator.estimateLowestAmbiguityPose(result));
+
+                if (robotPose.isPresent()) {
+                EstimatedRobotPose estimatedRobotPose = robotPose.get();
+                Pose3d myRobotPose3d = estimatedRobotPose.estimatedPose;
+                System.out.println(myRobotPose3d);
+                }
                 System.out.println(robotPose);
                 // At least one AprilTag was seen by the camera
                 for (var target : result.getTargets()) {
