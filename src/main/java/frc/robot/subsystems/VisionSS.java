@@ -50,7 +50,7 @@ public class VisionSS extends SubsystemBase{
             if (result.hasTargets()) {
                 boolean targetVisible = true;
                 SmartDashboard.putBoolean("Vision Target Visible", targetVisible);
-                System.out.println("Has Target");
+                // System.out.println("Has Target");
                 robotPose = photonEstimator.estimateCoprocMultiTagPose(result)
                                 .or(() -> photonEstimator.estimateLowestAmbiguityPose(result));
 
@@ -58,8 +58,8 @@ public class VisionSS extends SubsystemBase{
                 EstimatedRobotPose estimatedRobotPose = robotPose.get();
                 Pose3d myRobotPose3d = estimatedRobotPose.estimatedPose.times(39.3700787402);
                 Pose2d myRobotPose2d = myRobotPose3d.toPose2d();
-                System.out.println(myRobotPose3d);
-                System.out.println(myRobotPose2d);
+                // System.out.println(myRobotPose3d);
+                // System.out.println(myRobotPose2d);
                 double x = myRobotPose2d.getX();
                 double y = myRobotPose2d.getY();
                     if (Robot.alliance == "blue") {
@@ -75,10 +75,10 @@ public class VisionSS extends SubsystemBase{
                         SmartDashboard.putBoolean("Is Blue? ", isblue);
                     }
                 }
-                System.out.println(robotPose);
+                // System.out.println(robotPose);
                 // At least one AprilTag was seen by the camera
                 for (var target : result.getTargets()) {
-                    System.out.println(target.getFiducialId());
+                    //System.out.println(target.getFiducialId());
                 }
             } 
 
