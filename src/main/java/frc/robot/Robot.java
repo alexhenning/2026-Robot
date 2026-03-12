@@ -114,7 +114,8 @@ public class Robot extends TimedRobot {
     //RobotContainer.rc_visionSS.results.clear();
     int limit = RobotContainer.rc_visionSS.driveCamera.getFPSLimit();
 
-    RobotContainer.rc_visionSS.driveCamera.setFPSLimit(10);
+    RobotContainer.rc_visionSS.driveCamera.setFPSLimit(30);
+    RobotContainer.rc_visionSS.camera.setFPSLimit(30);
     SmartDashboard.putNumber("FPS Limit", limit);
     
     Optional<Alliance> ally = DriverStation.getAlliance();
