@@ -42,7 +42,7 @@ public class RobotContainer {
   public static final LauncherSpeedC rc_launcherspeedC = new LauncherSpeedC(rc_launcherSS, 0.5);
   public static final ClimbC rc_climbC = new ClimbC(rc_climbSS);
   public static final KickerC rc_KickerC = new KickerC(rc_KickerSS);
-  public static final BasicAutoC rc_basicAutoC = new BasicAutoC();
+  public static final BasicAutoC rc_basicAutoC = new BasicAutoC(rc_KickerSS);
   //public static final StaticLauncherC rc_staticLauncherC = new StaticLauncherC(rc_launcherSS);
   //public static final ChangeModeC rc_changeModeC = new ChangeModeC(rc_changeModeSS);
   public static final IntakeTiltC rc_intakeTiltC = new IntakeTiltC(rc_IntakeTiltSS);
