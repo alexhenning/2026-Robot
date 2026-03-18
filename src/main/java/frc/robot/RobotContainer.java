@@ -28,7 +28,7 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   // The robot's subsystems and commands are defined here...
-  private static final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  public static final DriveSubsystem m_robotDrive = new DriveSubsystem();
   public static final VisionSS rc_visionSS = new VisionSS();
   public static final IntakeTiltSS rc_IntakeTiltSS = new IntakeTiltSS();
   public static final IntakeSS rc_intakeSS = new IntakeSS();
@@ -104,27 +104,25 @@ public class RobotContainer {
     // Driver controller button commands
     m_driverController.leftStick().whileTrue(m_robotDrive.setXCommand());
     m_driverController.start().onTrue(m_robotDrive.zeroHeadingCommand());
-    //.a().onTrue(rc_changeModeC);
-
-    // Operator controller button commands
-
+    m_driverController.x().whileTrue(rc_KickerC);
     m_driverController.a().whileTrue(rc_climbC);
     m_driverController.b().whileTrue(rc_climbC);
-
-    m_operatorController.povRight().whileTrue(rc_intakeTiltC);
-    m_operatorController.povLeft().whileTrue(rc_intakeTiltC);
-
+    m_driverController.povUp().onTrue(new LauncherSpeedC(rc_launcherSS, 1));
+    m_driverController.povDown().onTrue(new LauncherSpeedC(rc_launcherSS, -1));
+    m_driverController.povRight().onTrue(new LauncherSpeedC(rc_launcherSS, 0.1));
+    m_driverController.povLeft().onTrue(new LauncherSpeedC(rc_launcherSS, -0.1));
+    // m_driverController.x().whileTrue(rc_KickerC);
+    //.a().onTrue(rc_changeModeC);
+    // Operator controller button commands
+    m_operatorController.leftStick().whileTrue(m_robotDrive.setXCommand());
+    m_operatorController.povUp().whileTrue(rc_intakeTiltC);
+    m_operatorController.povDown().whileTrue(rc_intakeTiltC);
+    m_operatorController.povLeft().whileTrue(rc_climbC);
+    m_driverController.povRight().whileTrue(rc_climbC);
     m_operatorController.leftBumper().whileTrue(rc_intakeC);
-    m_operatorController.povDown().whileTrue(rc_intakeC);
     m_operatorController.leftTrigger().whileTrue(rc_KickerC);
-    m_operatorController.rightBumper().whileTrue(rc_KickerC);
-      
-    // if (rc_changeModeSS.manual == false) {
-    //   m_operatorController.rightTrigger().whileTrue(rc_staticLauncherC);
-    //   //m_operatorController.rightBumper().whileTrue(rc_launcherC);
-    // }
-
-    // Shooter far to near
+    m_operatorController.rightTrigger().whileTrue(rc_launcherC);
+    m_operatorController.rightBumper().whileFalse(rc_intakeC);
     // 12 ft
     m_operatorController.a().whileTrue(new LauncherSetSpeedForDistance(rc_launcherSS, rc_KickerSS, 7.6));
     // 10 ft
@@ -134,15 +132,19 @@ public class RobotContainer {
     // 6 ft
     m_operatorController.y().whileTrue(new LauncherSetSpeedForDistance(rc_launcherSS, rc_KickerSS, 6.5));
 
+    //m_operatorController.rightBumper().whileTrue(rc_KickerC);
+    //m_operatorController.rightBumper().whileTrue(rc_manualLauncherC);
+    // if (rc_changeModeSS.manual == false) {
+    //   m_operatorController.rightTrigger().whileTrue(rc_staticLauncherC);
+    //   //m_operatorController.rightBumper().whileTrue(rc_launcherC);
+    // }
+    // Shooter far to near
+
     //else if (rc_changeModeSS.manual == true) {
-      m_driverController.povUp().onTrue(new LauncherSpeedC(rc_launcherSS, 1));
-      m_driverController.povDown().onTrue(new LauncherSpeedC(rc_launcherSS, -1));
-      m_driverController.povRight().onTrue(new LauncherSpeedC(rc_launcherSS, 0.1));
-      m_driverController.povLeft().onTrue(new LauncherSpeedC(rc_launcherSS, -0.1));
-      m_operatorController.rightTrigger().whileTrue(rc_launcherC);
-      m_operatorController.rightBumper().whileTrue(rc_manualLauncherC);
+
+
     //}
-      m_driverController.x().whileTrue(rc_KickerC);
+
 
   }
 

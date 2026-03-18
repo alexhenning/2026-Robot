@@ -31,7 +31,7 @@ public class IntakeTiltC extends Command {
   @Override
   public void execute() {
     //m_elev.setPosition(m_desiredVelocity.getAsDouble());
-    if (RobotContainer.m_operatorController.povLeft().getAsBoolean()) {
+    if (RobotContainer.m_operatorController.povDown().getAsBoolean()) {
       RobotContainer.rc_IntakeTiltSS.spin();
     }
     else {

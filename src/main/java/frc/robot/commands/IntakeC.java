@@ -25,7 +25,7 @@ public class IntakeC extends Command {
     if (RobotContainer.m_operatorController.leftBumper().getAsBoolean() == true) {
       RobotContainer.rc_intakeSS.IntakeForward();
     } 
-    else if (RobotContainer.m_operatorController.povDown().getAsBoolean() == true) {
+    else if (RobotContainer.m_operatorController.rightBumper().getAsBoolean() == true) {
         RobotContainer.rc_intakeSS.IntakeReverse();
       }
   }

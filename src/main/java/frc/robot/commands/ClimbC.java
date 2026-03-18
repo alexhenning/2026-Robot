@@ -17,7 +17,7 @@ public class ClimbC extends Command{
 
     @Override
     public void execute() {
-        if (RobotContainer.m_driverController.a().getAsBoolean()) {
+        if (RobotContainer.m_driverController.a().getAsBoolean() || RobotContainer.m_operatorController.povRight().getAsBoolean()) {
             RobotContainer.rc_climbSS.spin();
         }
         else {
