@@ -85,7 +85,7 @@
   "folder": "Blue Auto Basic Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -38.66
+    "rotation": 141.34
   },
   "useDefaultConstraints": true
 }

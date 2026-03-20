@@ -85,7 +85,7 @@
   "folder": "Red Auto Basic Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -142.374
+    "rotation": 37.626000000000005
   },
   "useDefaultConstraints": true
 }
