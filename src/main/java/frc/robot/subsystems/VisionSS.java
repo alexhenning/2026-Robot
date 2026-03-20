@@ -22,8 +22,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSS extends SubsystemBase{
-    public PhotonCamera driveCamera = new PhotonCamera("ShooterCam");
-    public PhotonCamera camera = new PhotonCamera("DriverCam");
+    public PhotonCamera driveCamera = new PhotonCamera("DriverCam");
+    public PhotonCamera camera = new PhotonCamera("ShooterCam");
     public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(0.2286, -0.3175, 0.127), new Rotation3d(0, 0, 0));
     PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
