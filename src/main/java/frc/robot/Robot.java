@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -45,6 +46,8 @@ public class Robot extends TimedRobot {
   public static String alliance = "blue";
 
   private final RobotContainer m_robotContainer;
+
+  public static double currenttime;
 
 
   /**
@@ -114,7 +117,10 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    SmartDashboard.putNumber("Auto Timer: ", RobotContainer.rc_basicAutoC.time);
+      double time = Timer.getFPGATimestamp();
+      double currenttime = RobotContainer.rc_basicAutoC.starttime - time;
+
+    SmartDashboard.putNumber("Auto Timer: ", currenttime);
   }
 
   @Override

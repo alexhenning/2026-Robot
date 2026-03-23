@@ -120,8 +120,8 @@ public class RobotContainer {
     //m_operatorController.leftStick().whileTrue(m_robotDrive.setXCommand());
     m_operatorController.povUp().whileTrue(rc_intakeTiltC);
     m_operatorController.povDown().whileTrue(rc_intakeTiltC);
-    m_operatorController.povLeft().whileTrue(rc_climbC);
-    m_operatorController.povRight().whileTrue(rc_climbC);
+    //m_operatorController.povLeft().whileTrue(rc_climbC);
+    //m_operatorController.povRight().whileTrue(rc_climbC);
     m_operatorController.leftBumper().whileTrue(rc_intakeC);
     m_operatorController.leftTrigger().whileTrue(rc_KickerC);
     m_operatorController.rightTrigger().whileTrue(rc_launcherC);
