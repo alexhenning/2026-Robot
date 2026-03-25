@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSS extends SubsystemBase{
+    
     public PhotonCamera driveCamera = new PhotonCamera("DriverCam");
     public PhotonCamera camera = new PhotonCamera("ShooterCam");
     public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
@@ -29,13 +30,18 @@ public class VisionSS extends SubsystemBase{
     PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
     public Optional<EstimatedRobotPose> robotPose;
     public double distanceToHub;
-    boolean isblue;
-    boolean targetVisible = false;
+    public boolean isblue;
+    public boolean targetVisible = false;
+    public double RobotX;
+    public double RobotY;
+    public List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+    public PhotonPipelineResult result;
 
     @Override
     public void periodic() {
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
         PhotonPipelineResult result;
+
         if (!results.isEmpty()) {
             result = results.get(results.size() - 1);
         } else {
@@ -60,16 +66,16 @@ public class VisionSS extends SubsystemBase{
                 Pose2d myRobotPose2d = myRobotPose3d.toPose2d();
                 // System.out.println(myRobotPose3d);
                 // System.out.println(myRobotPose2d);
-                double x = myRobotPose2d.getX();
-                double y = myRobotPose2d.getY();
+                double RobotX = myRobotPose2d.getX();
+                double RobotY = myRobotPose2d.getY();
                     if (Robot.alliance == "blue") {
-                        distanceToHub = Math.sqrt((x - Constants.HubCoords.blueHubX)*(x - Constants.HubCoords.blueHubX)+(y - Constants.HubCoords.blueHubY)*(y - Constants.HubCoords.blueHubY));
+                        distanceToHub = Math.sqrt((RobotX - Constants.HubCoords.blueHubX)*(RobotX - Constants.HubCoords.blueHubX)+(RobotY - Constants.HubCoords.blueHubY)*(RobotY - Constants.HubCoords.blueHubY));
                         SmartDashboard.putNumber("Distance to Hub: ", distanceToHub);
                         isblue = true;
                         SmartDashboard.putBoolean("Is Blue? ", isblue);
                     }
                     else if (Robot.alliance == "red") {
-                        distanceToHub = Math.sqrt((x - Constants.HubCoords.redHubX)*(x - Constants.HubCoords.redHubX)+(y - Constants.HubCoords.redHubY)*(y - Constants.HubCoords.redHubY));
+                        distanceToHub = Math.sqrt((RobotX - Constants.HubCoords.redHubX)*(RobotX - Constants.HubCoords.redHubX)+(RobotY - Constants.HubCoords.redHubY)*(RobotY - Constants.HubCoords.redHubY));
                         SmartDashboard.putNumber("Distance to Hub: ", distanceToHub);
                         isblue = false;
                         SmartDashboard.putBoolean("Is Blue? ", isblue);

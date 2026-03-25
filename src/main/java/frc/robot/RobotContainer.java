@@ -44,13 +44,15 @@ public class RobotContainer {
   public static final LauncherSpeedC rc_launcherspeedC = new LauncherSpeedC(rc_launcherSS, 0.5);
   public static final ClimbC rc_climbC = new ClimbC(rc_climbSS);
   public static final KickerC rc_KickerC = new KickerC(rc_KickerSS);
-  public static final BasicAutoC rc_basicAutoC = new BasicAutoC(rc_KickerSS, rc_launcherSS, m_robotDrive);
   //public static final StaticLauncherC rc_staticLauncherC = new StaticLauncherC(rc_launcherSS);
   //public static final ChangeModeC rc_changeModeC = new ChangeModeC(rc_changeModeSS);
   public static final IntakeTiltC rc_intakeTiltC = new IntakeTiltC(rc_IntakeTiltSS);
   public static final ManualLauncherC rc_manualLauncherC = new ManualLauncherC(rc_launcherSS);
+  public static final AutoAlignC rc_autoAlignC = new AutoAlignC(m_robotDrive);
 
   public static final AutoShootC rc_autoShootC = new AutoShootC(rc_KickerSS, rc_launcherSS);
+  public static final BasicAutoC rc_basicAutoC = new BasicAutoC(rc_KickerSS, rc_launcherSS, m_robotDrive);
+
 
   public static final CommandXboxController m_driverController =
     new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -114,6 +116,8 @@ public class RobotContainer {
     m_driverController.povDown().onTrue(new LauncherSpeedC(rc_launcherSS, -1));
     m_driverController.povRight().onTrue(new LauncherSpeedC(rc_launcherSS, 0.1));
     m_driverController.povLeft().onTrue(new LauncherSpeedC(rc_launcherSS, -0.1));
+
+    m_driverController.leftTrigger().onTrue(rc_autoAlignC);
     // m_driverController.x().whileTrue(rc_KickerC);
     //.a().onTrue(rc_changeModeC);
     // Operator controller button commands

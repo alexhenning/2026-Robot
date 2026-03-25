@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -12,7 +15,7 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Configs;
 
 public class MAXSwerveModule {
@@ -74,6 +77,9 @@ public class MAXSwerveModule {
         new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
   }
 
+
+  
+
   /**
    * Returns the current position of the module.
    *
@@ -115,4 +121,7 @@ public class MAXSwerveModule {
   public void resetEncoders() {
     m_drivingEncoder.setPosition(0);
   }
+
+  
+
 }

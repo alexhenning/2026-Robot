@@ -7,10 +7,14 @@
 package frc.robot.subsystems;
 
 import java.io.IOException;
-
+import java.util.Optional;
+import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
+import org.photonvision.*;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
@@ -29,11 +33,14 @@ import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.CANIDConstants;
 import frc.robot.Constants.DriveConstants;
 public class DriveSubsystem extends SubsystemBase {
+
+
 
   // Create MAXSwerveModules
   public final MAXSwerveModule m_frontLeft = 
@@ -79,6 +86,7 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
           });
+
 
   public DriveSubsystem() {
     // All other subsystem initialization
@@ -126,6 +134,8 @@ public class DriveSubsystem extends SubsystemBase {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
+
+
 
   }
 
@@ -305,4 +315,20 @@ public class DriveSubsystem extends SubsystemBase {
         m_rearLeft.getState(),
         m_rearRight.getState());
   }
+  public double getBlueHubAngle() {
+    double dydx = ((RobotContainer.rc_visionSS.RobotY - Constants.HubCoords.blueHubY)/(RobotContainer.rc_visionSS.RobotX - Constants.HubCoords.blueHubX));
+    double theta = Math.atan(dydx);
+    return theta;
+  }
+
+    public double getRedHubAngle() {
+    double dydx = ((RobotContainer.rc_visionSS.RobotY - Constants.HubCoords.redHubY)/(RobotContainer.rc_visionSS.RobotX - Constants.HubCoords.redHubX));
+    double theta = Math.atan(dydx);
+    return theta;
+  }
+  
+  
+
+
+  
 }
