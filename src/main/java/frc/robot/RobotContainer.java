@@ -60,15 +60,6 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    //  rc_visionSS.setDefaultCommand(
-    //   new RunCommand(
-    //       () ->
-    //         rc_visionSS.PrintTarget(),
-    //         rc_visionSS
-            
-    //   )
-    // );
-
     NamedCommands.registerCommand("Shoot", rc_autoShootC);
 
     autoChooser = AutoBuilder.buildAutoChooser();
