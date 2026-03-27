@@ -16,28 +16,26 @@ public class AutoShootC extends Command {
         addRequirements(subsystem);   
     }
 
-    double time = 0;
+    double time;
     double launchspeed;
 
     @Override
     public void initialize() {
         launchspeed = RobotContainer.rc_launcherSS.calculateLaunchSpeed(RobotContainer.rc_visionSS.getDistanceToHub());
+        time = 0;
     }
 
     @Override
     public void execute() {
-        while (time <= 1000) {
+        if (time <= 1000) {
             RobotContainer.rc_KickerSS.KickerForward();
-            time = time + 20;
         }
-        while (time <= 7000) {
+        else if (time <= 7000) {
             RobotContainer.rc_KickerSS.KickerForward();
             RobotContainer.rc_launcherSS.spin(launchspeed);
-            time = time + 20;
         }
-        if (time > 7000) {
-            this.cancel();
-        }
+        time = time + 20;
+
     }
 
     @Override
@@ -48,6 +46,9 @@ public class AutoShootC extends Command {
 
     @Override
     public boolean isFinished() {
+        if (time > 7000) {
+            return true;
+        }
         return false;
     }
 }

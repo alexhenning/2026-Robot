@@ -109,7 +109,6 @@ public class RobotContainer {
 
     m_driverController.leftTrigger().onTrue(rc_autoAlignC);
     // m_driverController.x().whileTrue(rc_KickerC);
-    //.a().onTrue(rc_changeModeC);
     // Operator controller button commands
     //m_operatorController.leftStick().whileTrue(m_robotDrive.setXCommand());
     m_operatorController.povUp().whileTrue(rc_intakeTiltC);
@@ -128,21 +127,6 @@ public class RobotContainer {
     m_operatorController.x().whileTrue(new LauncherSetSpeedForDistance(rc_launcherSS, rc_KickerSS, 7));
     // 6 ft
     m_operatorController.y().whileTrue(new LauncherSetSpeedForDistance(rc_launcherSS, rc_KickerSS, 6.5));
-
-    //m_operatorController.rightBumper().whileTrue(rc_KickerC);
-    //m_operatorController.rightBumper().whileTrue(rc_manualLauncherC);
-    // if (rc_changeModeSS.manual == false) {
-    //   m_operatorController.rightTrigger().whileTrue(rc_staticLauncherC);
-    //   //m_operatorController.rightBumper().whileTrue(rc_launcherC);
-    // }
-    // Shooter far to near
-
-    //else if (rc_changeModeSS.manual == true) {
-
-
-    //}
-
-
   }
 
   /**
@@ -152,8 +136,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     System.out.println("getAutonomousCommand");
-    //return autoChooser.getSelected();
-    return rc_basicAutoC;
+    return autoChooser.getSelected();
+    //return rc_basicAutoC;
     //return new PathPlannerAuto("Test Auto");
   }
 }

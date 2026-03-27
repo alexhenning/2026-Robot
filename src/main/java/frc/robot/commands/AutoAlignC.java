@@ -24,7 +24,7 @@ public class AutoAlignC extends Command{
 
     @Override
     public void execute() {
-    if (RobotContainer.rc_visionSS.isblue && !RobotContainer.rc_visionSS.results.isEmpty()) {
+    if (RobotContainer.rc_visionSS.isblue && !RobotContainer.rc_visionSS.results.isEmpty() && RobotContainer.m_driverController.leftBumper().getAsBoolean()) {
         RobotContainer.m_robotDrive.drive(
             -MathUtil.applyDeadband(
                         RobotContainer.m_driverController.getLeftY(), OIConstants.kDriveDeadband),
@@ -34,7 +34,7 @@ public class AutoAlignC extends Command{
                         true
                         );
     }
-    else if (!RobotContainer.rc_visionSS.isblue && !RobotContainer.rc_visionSS.results.isEmpty()) {
+    else if (!RobotContainer.rc_visionSS.isblue && !RobotContainer.rc_visionSS.results.isEmpty() && RobotContainer.m_driverController.leftBumper().getAsBoolean()) {
         RobotContainer.m_robotDrive.drive(
             -MathUtil.applyDeadband(
                         RobotContainer.m_driverController.getLeftY(), OIConstants.kDriveDeadband),
