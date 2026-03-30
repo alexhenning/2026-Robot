@@ -326,7 +326,7 @@ public class DriveSubsystem extends SubsystemBase {
     return theta2;
   }
 
-    public double getRedHubAngle() {
+  public double getRedHubAngle() {
     double dydx = ((RobotContainer.rc_visionSS.RobotY - Constants.HubCoords.redHubY)/(RobotContainer.rc_visionSS.RobotX - Constants.HubCoords.redHubX));
     SmartDashboard.putNumber("DY/DX", dydx);
     double theta = Math.atan(dydx);
@@ -337,6 +337,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
   
   
+
 
 
   
