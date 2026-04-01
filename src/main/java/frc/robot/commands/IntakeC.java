@@ -3,13 +3,11 @@ package frc.robot.commands;
 import java.text.BreakIterator;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeSS;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeC extends Command {
-  /** Creates a new AlgaeC. */
   public IntakeC(IntakeSS subsystem) {
     subsystem = RobotContainer.rc_intakeSS;
     addRequirements(subsystem);   

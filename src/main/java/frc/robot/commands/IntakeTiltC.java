@@ -4,22 +4,15 @@
 
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeTiltSS;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeTiltC extends Command {
-  /** Creates a new ClimbPIDC. */
-  public final IntakeTiltSS m_elev;
-  //private final DoubleSupplier m_desiredVelocity;
 
-  public IntakeTiltC(IntakeTiltSS subsystem/*, DoubleSupplier desiredVelocity*/) {
-    m_elev = subsystem;
-   // m_desiredVelocity = desiredVelocity;
+  public IntakeTiltC(IntakeTiltSS subsystem) {
+    subsystem = RobotContainer.rc_IntakeTiltSS;
     addRequirements(subsystem);
   }
 
@@ -30,7 +23,6 @@ public class IntakeTiltC extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //m_elev.setPosition(m_desiredVelocity.getAsDouble());
     if (RobotContainer.m_operatorController.povDown().getAsBoolean()) {
       RobotContainer.rc_IntakeTiltSS.spin();
     }

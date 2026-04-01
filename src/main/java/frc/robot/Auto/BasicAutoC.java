@@ -34,33 +34,6 @@ public class BasicAutoC extends Command {
         launchspeed = RobotContainer.rc_launcherSS.calculateLaunchSpeed(RobotContainer.rc_visionSS.getDistanceToHub());
         RobotContainer.rc_KickerSS.KickerForward();
         RobotContainer.rc_launcherSS.spin(launchspeed);
-        //if (Robot.currenttime <= 2) {
-          //  RobotContainer.m_robotDrive.drive(0.1, 0, 0, false);
-            //SmartDashboard.putNumber("Auto Timer: ", Robot.currenttime);
-        //}
-        /*else if (Robot.currenttime > 2) {
-            RobotContainer.m_robotDrive.drive(0, 0, 0, false);
-            launchspeed = RobotContainer.rc_launcherSS.calculateLaunchSpeed(RobotContainer.rc_visionSS.getDistanceToHub());
-            if (Robot.currenttime <= 3) {
-                //RobotContainer.rc_KickerSS.KickerForward();
-            }
-            if (Robot.currenttime > 3) {
-                if (Robot.currenttime <= 11) {
-                    //RobotContainer.rc_KickerSS.KickerForward();
-                    //RobotContainer.rc_launcherSS.spin(launchspeed);
-                }
-                else if (Robot.currenttime > 11) {
-                    RobotContainer.rc_KickerSS.KickerStop();
-                    RobotContainer.rc_launcherSS.stop();
-                    RobotContainer.m_robotDrive.drive(0, 0, 0, false);
-                }
-            }
-        }*/
-       // else {
-         //   RobotContainer.m_robotDrive.drive(0, 0, 0, false);
-        //}
-
-    
     }
 
     @Override

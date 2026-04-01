@@ -10,12 +10,12 @@ import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class KickerSS extends SubsystemBase {
-  /** Creates a new AlgaeC. */
+
+    // Create kicker motors
     public final SparkFlex Kicker = new SparkFlex(Constants.CANIDConstants.KickerCANID, MotorType.kBrushless);
     public final SparkFlex KickerBelt = new SparkFlex(Constants.CANIDConstants.KickerBeltCANID, MotorType.kBrushless);
 
-  
-
+    // Kicker functions
     public void KickerForward(){
         Kicker.set(0.5);
         KickerBelt.set(-0.5);

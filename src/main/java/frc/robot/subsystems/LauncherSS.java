@@ -14,6 +14,7 @@ public class LauncherSS extends SubsystemBase{
     public double speed = 8;
     public int calc;
 
+    // Create the launcher motors
     public static final SparkMax launcher1 = new SparkMax(Constants.CANIDConstants.launcher1CANID, MotorType.kBrushless);
     public static final SparkMax launcher2 = new SparkMax(Constants.CANIDConstants.launcher2CANID, MotorType.kBrushless);
 
@@ -21,6 +22,7 @@ public class LauncherSS extends SubsystemBase{
     // launcher at 0.675 gets it in from 170
     // Launcher at 0.625 gets it in at 130
     
+    // Launcher functions
     public Double changeSpeed(double change) {
       speed = speed + change;
       if (speed < 0) {

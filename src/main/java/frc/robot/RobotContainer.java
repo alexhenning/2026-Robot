@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Auto.AutoIntakeC;
 import frc.robot.Auto.AutoShootC;
 import frc.robot.Auto.BasicAutoC;
 import frc.robot.Constants.OIConstants;
@@ -29,7 +30,7 @@ public class RobotContainer {
   
   private final SendableChooser<Command> autoChooser;
 
-  // The robot's subsystems and commands are defined here...
+  // The robot's subsystems
   public static final DriveSubsystem m_robotDrive = new DriveSubsystem();
   public static final VisionSS rc_visionSS = new VisionSS();
   public static final IntakeTiltSS rc_IntakeTiltSS = new IntakeTiltSS();
@@ -38,21 +39,22 @@ public class RobotContainer {
   public static final ClimbSS rc_climbSS = new ClimbSS();
   public static final KickerSS rc_KickerSS = new KickerSS();
 
+  // The robot's commands
   public static final IntakeC rc_intakeC = new IntakeC(rc_intakeSS);
   public static final LauncherC rc_launcherC = new LauncherC(rc_launcherSS, rc_visionSS);
   public static final LauncherSpeedC rc_launcherspeedC = new LauncherSpeedC(rc_launcherSS, 0.5);
   public static final ClimbC rc_climbC = new ClimbC(rc_climbSS);
   public static final KickerC rc_KickerC = new KickerC(rc_KickerSS);
-  //public static final StaticLauncherC rc_staticLauncherC = new StaticLauncherC(rc_launcherSS);
-  //public static final ChangeModeC rc_changeModeC = new ChangeModeC(rc_changeModeSS);
   public static final IntakeTiltC rc_intakeTiltC = new IntakeTiltC(rc_IntakeTiltSS);
   public static final ManualLauncherC rc_manualLauncherC = new ManualLauncherC(rc_launcherSS);
   public static final AutoAlignC rc_autoAlignC = new AutoAlignC(m_robotDrive, rc_visionSS);
 
+  // The robot's auto commands
   public static final AutoShootC rc_autoShootC = new AutoShootC(rc_KickerSS, rc_launcherSS);
   public static final BasicAutoC rc_basicAutoC = new BasicAutoC(rc_KickerSS, rc_launcherSS, m_robotDrive);
+  public static final AutoIntakeC rc_autoIntakeC = new AutoIntakeC(rc_IntakeTiltSS, rc_intakeSS);
 
-
+  // The drive team controllers
   public static final CommandXboxController m_driverController =
     new CommandXboxController(OperatorConstants.kDriverControllerPort);
   public static final CommandXboxController m_operatorController =
@@ -60,7 +62,10 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    // Named Commands and other PathPlanner things
     NamedCommands.registerCommand("Shoot", rc_autoShootC);
+    NamedCommands.registerCommand("Intake", rc_KickerC);
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -96,6 +101,7 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureBindings() {
+    
     // Driver controller button commands
     
     //m_driverController.leftBumper().whileTrue(rc_autoAlignC);
@@ -107,15 +113,11 @@ public class RobotContainer {
     m_driverController.povDown().onTrue(new LauncherSpeedC(rc_launcherSS, -1));
     m_driverController.povRight().onTrue(new LauncherSpeedC(rc_launcherSS, 0.1));
     m_driverController.povLeft().onTrue(new LauncherSpeedC(rc_launcherSS, -0.1));
-
     m_driverController.leftTrigger().onTrue(rc_autoAlignC);
-    // m_driverController.x().whileTrue(rc_KickerC);
+
     // Operator controller button commands
-    //m_operatorController.leftStick().whileTrue(m_robotDrive.setXCommand());
     m_operatorController.povUp().whileTrue(rc_intakeTiltC);
     m_operatorController.povDown().whileTrue(rc_intakeTiltC);
-    //m_operatorController.povLeft().whileTrue(rc_climbC);
-    //m_operatorController.povRight().whileTrue(rc_climbC);
     m_operatorController.leftBumper().whileTrue(rc_intakeC);
     m_operatorController.leftTrigger().whileTrue(rc_KickerC);
     m_operatorController.rightTrigger().whileTrue(rc_launcherC);

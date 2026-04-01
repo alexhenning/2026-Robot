@@ -9,9 +9,11 @@ import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSS extends SubsystemBase {
-  /** Creates a new AlgaeC. */
-  public final SparkFlex Intake1 = new SparkFlex(Constants.CANIDConstants.IntakeSpinCANID, MotorType.kBrushless);
 
+    // Create intake motor
+    public final SparkFlex Intake1 = new SparkFlex(Constants.CANIDConstants.IntakeSpinCANID, MotorType.kBrushless);
+
+    // Intake functions
     public void IntakeForward(){
         Intake1.set(-0.5);
     }

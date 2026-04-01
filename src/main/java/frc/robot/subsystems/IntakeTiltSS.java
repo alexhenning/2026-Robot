@@ -15,8 +15,10 @@ import frc.robot.Constants;
 
 public class IntakeTiltSS extends SubsystemBase {
 
+  // Create intake tilt motor
   public final SparkFlex Motor1 = new SparkFlex(Constants.CANIDConstants.kIntakeTiltMotorCANID, MotorType.kBrushless);
 
+  // Intake tilt functions
   public void spin() {
     Motor1.set(0.4);
   }

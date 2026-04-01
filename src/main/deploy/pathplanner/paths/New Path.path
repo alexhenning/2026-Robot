@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.022369472182595,
-        "y": 4.171
+        "x": 2.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.924194008559207,
-        "y": 4.804610275063463
+        "x": 3.0,
+        "y": 7.0
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 14.455,
-        "y": 5.698
+        "x": 4.0,
+        "y": 6.0
       },
       "prevControl": {
-        "x": 14.118594864479315,
-        "y": 5.193392296718973
+        "x": 3.0,
+        "y": 6.0
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 37.626000000000005
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Red Auto Basic Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
