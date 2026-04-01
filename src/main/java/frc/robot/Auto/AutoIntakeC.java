@@ -4,30 +4,42 @@ package frc.robot.Auto;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.IntakeSS;
+import frc.robot.subsystems.IntakeTiltSS;
+import frc.robot.subsystems.KickerSS;
+import frc.robot.subsystems.LauncherSS;
 
 public class AutoIntakeC extends Command{
-
-    double starttime;
+    
+    public AutoIntakeC(IntakeTiltSS subsystem, IntakeSS subsystem2) {
+        subsystem = RobotContainer.rc_IntakeTiltSS;
+        subsystem2 = RobotContainer.rc_intakeSS;
+        addRequirements(subsystem);   
+    }
+    
     double time;
 
     @Override
     public void initialize() {
-        starttime = Timer.getFPGATimestamp();
+        time = 0;
     }
 
     @Override
     public void execute() {
-        if (time-starttime < 1) {
+        if (time <= 1000) {
             RobotContainer.rc_IntakeTiltSS.spin();
         }
 
-        else if (time - starttime < 2) {
+        else if (time <= 2000) {
             RobotContainer.rc_intakeSS.IntakeForward();
         }
 
-        else if (time - starttime < 3.5) {
+        else if (time <= 3500) {
             RobotContainer.rc_IntakeTiltSS.reverse();
+            RobotContainer.rc_intakeSS.IntakeStop();
         }
+
+        time = time + 20;
     }
 
     @Override
@@ -38,7 +50,7 @@ public class AutoIntakeC extends Command{
 
     @Override
     public boolean isFinished() {
-        if (time <= 3.5) {
+        if (time <= 3500) {
             return false;
         }
         else {
