@@ -52,7 +52,7 @@ public class RobotContainer {
 
   public static final AutoShootC rc_autoShootC = new AutoShootC(rc_KickerSS, rc_launcherSS);
   public static final BasicAutoC rc_basicAutoC = new BasicAutoC(rc_KickerSS, rc_launcherSS, m_robotDrive);
-  public static final AutoIntakeC rc_autoIntakeC = new AutoIntakeC();
+  public static final AutoIntakeC rc_autoIntakeC = new AutoIntakeC(rc_IntakeTiltSS, rc_intakeSS);
 
   public static final CommandXboxController m_driverController =
     new CommandXboxController(OperatorConstants.kDriverControllerPort);
