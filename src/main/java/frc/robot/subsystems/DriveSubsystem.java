@@ -42,6 +42,7 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.CANIDConstants;
 import frc.robot.Constants.DriveConstants;
+
 public class DriveSubsystem extends SubsystemBase {
 
   static SwerveDrivePoseEstimator m_poseEstimator;
@@ -337,10 +338,4 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Atan2 Angle to Hub", theta2);
     return theta2;
   }
-  
-  
-
-
-
-  
 }

@@ -162,7 +162,7 @@ public class AutoAlignC extends Command {
     
     @Override
     public void end(boolean interrupted) {
-        m_drive.drive(0, 0, 0, false);
+        m_drive.drive(0, 0, 0, true);
     }
     
     @Override
