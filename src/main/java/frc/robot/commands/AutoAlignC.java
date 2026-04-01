@@ -36,6 +36,7 @@ import edu.wpi.first.math.*;
  *     offset = visionHeading - imuHeading
  */
 public class AutoAlignC extends Command {
+    public Rotation2d desiredHeading;
     public Pose2d visionPose;
     public double visionTimestamp;
     private final DriveSubsystem m_drive;
@@ -117,7 +118,7 @@ public class AutoAlignC extends Command {
         Translation2d targetPos = getTargetPosition();  // Hub location
         Translation2d robotPos = getLastKnownPosition(); // From vision
         
-        Rotation2d desiredHeading = targetPos.minus(robotPos).getAngle();
+        desiredHeading = targetPos.minus(robotPos).getAngle();
         
         // === STEP 5: Compute error and rotation command ===
         Rotation2d headingError = desiredHeading.minus(estimatedFieldHeading);
@@ -126,7 +127,9 @@ public class AutoAlignC extends Command {
         SmartDashboard.putNumber("AutoAlign/HeadingError", headingError.getDegrees());
         
         // === STEP 6: Drive! ===
+        //DriveSubsystem.aligntoHub(desiredHeading);
         driveWithDriverInput(rotationCommand);
+
     }
     
     private void driveWithDriverInput(double autoRotation) {
@@ -140,6 +143,7 @@ public class AutoAlignC extends Command {
             autoRotation,
             true
         );
+        DriveSubsystem.aligntoHub(desiredHeading);
     }
     
     private Translation2d getTargetPosition() {

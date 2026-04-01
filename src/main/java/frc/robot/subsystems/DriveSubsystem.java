@@ -6,6 +6,8 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -47,25 +49,25 @@ public class DriveSubsystem extends SubsystemBase {
   static SwerveDrivePoseEstimator m_poseEstimator;
 
   // Create MAXSwerveModules
-  public final MAXSwerveModule m_frontLeft = 
+  public static final MAXSwerveModule m_frontLeft = 
       new MAXSwerveModule(
           CANIDConstants.kFrontLeftDrivingCanId,
           CANIDConstants.kFrontLeftTurningCanId,
           DriveConstants.kFrontLeftChassisAngularOffset);
 
-  public final MAXSwerveModule m_frontRight =
+  public static final MAXSwerveModule m_frontRight =
       new MAXSwerveModule(
           CANIDConstants.kFrontRightDrivingCanId,
           CANIDConstants.kFrontRightTurningCanId,
           DriveConstants.kFrontRightChassisAngularOffset);
 
-  public final MAXSwerveModule m_rearLeft =
+  public static final MAXSwerveModule m_rearLeft =
       new MAXSwerveModule(
           CANIDConstants.kRearLeftDrivingCanId,
           CANIDConstants.kRearLeftTurningCanId,
           DriveConstants.kBackLeftChassisAngularOffset);
 
-  public final MAXSwerveModule m_rearRight =
+  public static final MAXSwerveModule m_rearRight =
       new MAXSwerveModule(
           CANIDConstants.kRearRightDrivingCanId,
           CANIDConstants.kRearRightTurningCanId,
@@ -338,7 +340,12 @@ public class DriveSubsystem extends SubsystemBase {
     return theta2;
   }
   
-  
+  public static void aligntoHub(Rotation2d desiredHeading) {
+          m_frontLeft.setDesiredState(new SwerveModuleState(0, desiredHeading));
+          m_frontRight.setDesiredState(new SwerveModuleState(0, desiredHeading));
+          m_rearLeft.setDesiredState(new SwerveModuleState(0, desiredHeading));
+          m_rearRight.setDesiredState(new SwerveModuleState(0, desiredHeading));
+  }
 
 
 
