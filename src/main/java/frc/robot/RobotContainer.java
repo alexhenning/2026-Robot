@@ -104,7 +104,7 @@ public class RobotContainer {
     
     // Driver controller button commands
     
-    //m_driverController.leftBumper().whileTrue(rc_autoAlignC);
+    m_driverController.leftBumper().whileTrue(rc_autoAlignC);
     m_driverController.start().onTrue(m_robotDrive.zeroHeadingCommand());
     m_driverController.x().whileTrue(rc_KickerC);
     m_driverController.a().whileTrue(rc_climbC);

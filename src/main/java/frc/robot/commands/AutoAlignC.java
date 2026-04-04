@@ -62,6 +62,10 @@ public class AutoAlignC extends Command {
     @Override
     public void initialize() {
         m_hasValidOffset = false;  // Recalibrate when command starts
+        SmartDashboard.putNumber("Vision/IMU Offset (deg)", 0);
+        SmartDashboard.putNumber("AutoAlign/EstimatedHeading", 0);
+        SmartDashboard.putNumber("AutoAlign/HeadingError", 0);
+
     }
     
     @Override
@@ -128,10 +132,23 @@ public class AutoAlignC extends Command {
         
         // === STEP 6: Drive! ===
         //DriveSubsystem.aligntoHub(desiredHeading);
-        driveWithDriverInput(rotationCommand);
+        //driveWithDriverInput(rotationCommand);
+        driveWithAutoAngle(desiredHeading, rotationCommand);
 
     }
-    
+    private void driveWithAutoAngle(Rotation2d desiredHeading, double autoRotation) {
+        DriveSubsystem.aligntoHub(desiredHeading);
+        m_drive.drive(
+            -MathUtil.applyDeadband(
+                RobotContainer.m_driverController.getLeftY(), 
+                OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(
+                RobotContainer.m_driverController.getLeftX(), 
+                OIConstants.kDriveDeadband),
+            autoRotation,
+            true
+        );  
+    }
     private void driveWithDriverInput(double autoRotation) {
         m_drive.drive(
             -MathUtil.applyDeadband(
@@ -143,7 +160,6 @@ public class AutoAlignC extends Command {
             autoRotation,
             true
         );
-        DriveSubsystem.aligntoHub(desiredHeading);
     }
     
     private Translation2d getTargetPosition() {

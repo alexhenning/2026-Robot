@@ -136,6 +136,9 @@ public class Robot extends TimedRobot {
     RobotContainer.rc_visionSS.driveCamera.setFPSLimit(30);
     RobotContainer.rc_visionSS.camera.setFPSLimit(30);
     SmartDashboard.putNumber("FPS Limit", limit);
+    SmartDashboard.putNumber("Vision/IMU Offset (deg)", 0);
+    SmartDashboard.putNumber("AutoAlign/EstimatedHeading", 0);
+    SmartDashboard.putNumber("AutoAlign/HeadingError", 0);
     
     Optional<Alliance> ally = DriverStation.getAlliance();
 
