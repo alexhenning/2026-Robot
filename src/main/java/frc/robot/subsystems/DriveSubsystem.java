@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 
 import java.io.IOException;
+import java.net.ContentHandler;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
@@ -16,6 +17,7 @@ import org.photonvision.*;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
@@ -35,6 +37,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -49,7 +52,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   static SwerveDrivePoseEstimator m_poseEstimator;
   public PIDController drivePidController;
-  //private static DriveSubsystem instance;
+
 
   // Create MAXSwerveModules
   public static final MAXSwerveModule m_frontLeft = 
@@ -157,6 +160,8 @@ public class DriveSubsystem extends SubsystemBase {
     new Pose2d()  // Initial pose
 );
     drivePidController = new PIDController(0, 0, 0);
+
+
     
 
   }
@@ -168,53 +173,6 @@ public class DriveSubsystem extends SubsystemBase {
   //   }
   //   return instance;
   // }
-
-
-  public void set(double x, double y, double omega) {
-
-        if(Constants.DriveConstants.fieldRelative) {
-            double angleDiff = Math.atan2(y, x) - (m_gyro.getYaw().getValue().in(Units.Degrees)-360); //difference between input angle and gyro angle gives desired field relative angle
-            double r = Math.sqrt(x*x + y*y); //magnitude of translation vector
-            x = r * Math.cos(angleDiff);
-            y = r * Math.sin(angleDiff);
-        }
-        
-        //Repeated equations
-        double a = omega * Constants.DriveConstants.kTrackWidth;
-        double b = omega * Constants.DriveConstants.kWheelBase;
-
-        //The addition of the movement and rotational vector
-        Translation2d t0 = new Translation2d(x-b, y-a);
-        Translation2d t1 = new Translation2d(x+b, y-a);
-        Translation2d t2 = new Translation2d(x+b, y+a);
-        Translation2d t3 = new Translation2d(x-b, y+a);
-
-        //convert to polar
-        
-
-
-
-
-
-        // double xSpeedDelivered = 2 * x * DriveConstants.kMaxSpeedMetersPerSecond;
-        // double ySpeedDelivered = 2 * y * DriveConstants.kMaxSpeedMetersPerSecond;
-        // double rotDelivered = omega * DriveConstants.kMaxAngularSpeed;
-        // var swerveModuleStates =
-        //     DriveConstants.kDriveKinematics.toSwerveModuleStates(
-        //         Constants.DriveConstants.fieldRelative
-        //             ? ChassisSpeeds.fromFieldRelativeSpeeds(
-        //                 xSpeedDelivered,
-        //                 ySpeedDelivered,
-        //                 rotDelivered,
-        //                 Rotation2d.fromDegrees(m_gyro.getYaw().getValue().in(Units.Degrees)-360))
-        //             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
-        // SwerveDriveKinematics.desaturateWheelSpeeds(
-        //     swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-        // m_frontLeft.setDesiredState(swerveModuleStates[0]);
-        // m_frontRight.setDesiredState(swerveModuleStates[1]);
-        // m_rearLeft.setDesiredState(swerveModuleStates[2]);
-        // m_rearRight.setDesiredState(swerveModuleStates[3]);
-    }
 
 
   @Override
