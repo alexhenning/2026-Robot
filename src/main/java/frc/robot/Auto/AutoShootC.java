@@ -28,7 +28,7 @@ public class AutoShootC extends Command {
     @Override
     public void execute() {
         if (time <= 1000) {
-            RobotContainer.rc_KickerSS.KickerForward();
+            RobotContainer.rc_launcherSS.spin(launchspeed);
         }
         else if (time <= 7000) {
             RobotContainer.rc_KickerSS.KickerForward();

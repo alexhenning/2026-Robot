@@ -29,6 +29,7 @@ import frc.robot.commands.*;
 public class RobotContainer {
   
   private final SendableChooser<Command> autoChooser;
+  boolean isItGoTime = true;
 
   // The robot's subsystems
   public static final DriveSubsystem m_robotDrive = new DriveSubsystem();
@@ -67,7 +68,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("Shoot", rc_autoShootC);
     NamedCommands.registerCommand("Intake", rc_KickerC);
 
-    autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+      (stream) -> isItGoTime
+        ? stream.filter(auto -> auto.getName().startsWith("OS"))
+        : stream
+      );
+
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
 
@@ -104,7 +110,7 @@ public class RobotContainer {
     
     // Driver controller button commands
     
-    m_driverController.leftBumper().whileTrue(rc_autoAlignC);
+    //m_driverController.leftBumper().whileTrue(rc_autoAlignC);
     m_driverController.start().onTrue(m_robotDrive.zeroHeadingCommand());
     m_driverController.x().whileTrue(rc_KickerC);
     m_driverController.a().whileTrue(rc_climbC);
@@ -113,7 +119,7 @@ public class RobotContainer {
     m_driverController.povDown().onTrue(new LauncherSpeedC(rc_launcherSS, -1));
     m_driverController.povRight().onTrue(new LauncherSpeedC(rc_launcherSS, 0.1));
     m_driverController.povLeft().onTrue(new LauncherSpeedC(rc_launcherSS, -0.1));
-    m_driverController.leftTrigger().onTrue(rc_autoAlignC);
+    //m_driverController.leftTrigger().onTrue(rc_autoAlignC);
 
     // Operator controller button commands
     m_operatorController.povUp().whileTrue(rc_intakeTiltC);

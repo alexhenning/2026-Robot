@@ -17,13 +17,13 @@ public class KickerSS extends SubsystemBase {
 
     // Kicker functions
     public void KickerForward(){
-        Kicker.set(0.5);
-        KickerBelt.set(-0.5);
+        Kicker.set(0.75);
+        KickerBelt.set(-0.75);
     }
 
    public void KickerReverse(){
-        Kicker.set(-0.5);
-        KickerBelt.set(0.5);
+        Kicker.set(-0.75);
+        KickerBelt.set(0.75);
 
     }
 
