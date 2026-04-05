@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSS extends SubsystemBase{
-    
+    //private static VisionSS singleton;
     public PhotonCamera driveCamera = new PhotonCamera("DriverCam");
     public PhotonCamera camera = new PhotonCamera("ShooterCam");
     public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
@@ -36,6 +36,16 @@ public class VisionSS extends SubsystemBase{
     public double RobotY;
     public List<PhotonPipelineResult> results = camera.getAllUnreadResults();
     public PhotonPipelineResult result;
+    public double xDistanceToHub;
+    public double yDistanceToHub;
+
+
+
+
+    // public static VisionSS getInstance() {
+    //     if (singleton == null) singleton =  new VisionSS();
+    //     return singleton;
+    // }
 
     @Override
     public void periodic() {
@@ -70,12 +80,16 @@ public class VisionSS extends SubsystemBase{
                         SmartDashboard.putNumber("Distance to Hub: ", distanceToHub);
                         isblue = true;
                         SmartDashboard.putBoolean("Is Blue? ", isblue);
+                        xDistanceToHub = Math.abs((RobotX - Constants.HubCoords.blueHubX));
+                        yDistanceToHub = Math.abs((RobotY - Constants.HubCoords.blueHubY));
                     }
                     else if (Robot.alliance == "red") {
                         distanceToHub = Math.sqrt((RobotX - Constants.HubCoords.redHubX)*(RobotX - Constants.HubCoords.redHubX)+(RobotY - Constants.HubCoords.redHubY)*(RobotY - Constants.HubCoords.redHubY));
                         SmartDashboard.putNumber("Distance to Hub: ", distanceToHub);
                         isblue = false;
                         SmartDashboard.putBoolean("Is Blue? ", isblue);
+                        xDistanceToHub = Math.abs((RobotX - Constants.HubCoords.redHubX));
+                        yDistanceToHub = Math.abs((RobotY - Constants.HubCoords.redHubY));
                     }
                 }
                 // At least one AprilTag was seen by the camera

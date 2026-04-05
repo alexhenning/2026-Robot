@@ -11,10 +11,10 @@ import frc.robot.subsystems.LauncherSS;
 
 public class AutoIntakeC extends Command{
     
-    public AutoIntakeC(IntakeTiltSS subsystem, IntakeSS subsystem2) {
-        subsystem = RobotContainer.rc_IntakeTiltSS;
-        subsystem2 = RobotContainer.rc_intakeSS;
-        addRequirements(subsystem);   
+    public AutoIntakeC(IntakeTiltSS m_Intaketilt, IntakeSS m_intake) {
+        m_Intaketilt = RobotContainer.rc_IntakeTiltSS;
+        m_intake = RobotContainer.rc_intakeSS;
+        addRequirements(m_Intaketilt, m_intake);   
     }
     
     double time;

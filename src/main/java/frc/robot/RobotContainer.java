@@ -48,10 +48,10 @@ public class RobotContainer {
   public static final KickerC rc_KickerC = new KickerC(rc_KickerSS);
   public static final IntakeTiltC rc_intakeTiltC = new IntakeTiltC(rc_IntakeTiltSS);
   public static final ManualLauncherC rc_manualLauncherC = new ManualLauncherC(rc_launcherSS);
-  public static final AutoAlignC rc_autoAlignC = new AutoAlignC(m_robotDrive, rc_visionSS);
+  public static final AutoAlignC rc_autoAlignC = new AutoAlignC(m_robotDrive, rc_visionSS, 0);
 
   // The robot's auto commands
-  public static final AutoShootC rc_autoShootC = new AutoShootC(rc_KickerSS, rc_launcherSS);
+  public static final AutoShootC rc_autoShootC = new AutoShootC(rc_KickerSS, rc_launcherSS, rc_IntakeTiltSS);
   public static final BasicAutoC rc_basicAutoC = new BasicAutoC(rc_KickerSS, rc_launcherSS, m_robotDrive);
   public static final AutoIntakeC rc_autoIntakeC = new AutoIntakeC(rc_IntakeTiltSS, rc_intakeSS);
 

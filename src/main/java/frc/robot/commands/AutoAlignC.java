@@ -3,6 +3,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,8 +19,10 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 
 import com.fasterxml.jackson.databind.introspect.TypeResolutionContext.Empty;
+import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.math.*;
+import edu.wpi.first.math.controller.PIDController;
 
 /**
  * AUTO-ALIGN WITH SENSOR FUSION
@@ -37,11 +40,13 @@ import edu.wpi.first.math.*;
  */
 public class AutoAlignC extends Command {
     public Rotation2d desiredHeading;
+    public double desiredState;
     public Pose2d visionPose;
     public double visionTimestamp;
+    private PIDController turnController;
     private final DriveSubsystem m_drive;
     private final VisionSS m_vision;
-    
+    public boolean skipperIsControllingHimselfAgainOhNoOhCrapOhDarnOhDearWaitNoItsFineWeActuallyTrustHimIfHeDoesntDoAnythingDumbHaveFunSkipper;
     // Sensor fusion state
     private Rotation2d m_imuToFieldOffset = new Rotation2d();  // Calibration offset
     private double m_lastVisionTimestamp = 0;
@@ -53,18 +58,40 @@ public class AutoAlignC extends Command {
     // How old can vision data be before we stop trusting it?
     private static final double kVisionTimeoutSeconds = 0.5;
     
-    public AutoAlignC(DriveSubsystem drive, VisionSS vision) {
+    public AutoAlignC(DriveSubsystem drive, VisionSS vision, double desiredState) {
+        super();
         m_drive = drive;
         m_vision = vision;
-        addRequirements(drive);
+        addRequirements(drive); 
+        turnController = new PIDController(0, 0, 0);
+        turnController.setTolerance(0);
+        this.desiredState = desiredState;
+
     }
-    
+    public class PID {
+    public static PIDController rotationPID = getRotationPID();
+    private static PIDController getRotationPID() {
+        PIDController pid = new PIDController(
+                Constants.PIDConstants.kDriveRotationP,
+                Constants.PIDConstants.kDriveRotationI,
+                Constants.PIDConstants.kDriveRotationD);
+        pid.setTolerance(Constants.PIDConstants.kDriveRotationT);
+        pid.enableContinuousInput(Constants.GyroConstants.kAlsoSS, Constants.GyroConstants.kSS);
+        return pid;
+    }
+}
+
+
+
     @Override
     public void initialize() {
         m_hasValidOffset = false;  // Recalibrate when command starts
         SmartDashboard.putNumber("Vision/IMU Offset (deg)", 0);
         SmartDashboard.putNumber("AutoAlign/EstimatedHeading", 0);
         SmartDashboard.putNumber("AutoAlign/HeadingError", 0);
+        PID.rotationPID.setSetpoint(desiredState);
+        super.initialize();
+
 
     }
     
@@ -132,22 +159,11 @@ public class AutoAlignC extends Command {
         
         // === STEP 6: Drive! ===
         //DriveSubsystem.aligntoHub(desiredHeading);
-        //driveWithDriverInput(rotationCommand);
-        driveWithAutoAngle(desiredHeading, rotationCommand);
+        driveWithDriverInput(-PID.rotationPID.calculate(DriveSubsystem.m_gyro.getYaw().getValue().in(Units.Degrees)-360));
+        skipperIsControllingHimselfAgainOhNoOhCrapOhDarnOhDearWaitNoItsFineWeActuallyTrustHimIfHeDoesntDoAnythingDumbHaveFunSkipper = true;
 
-    }
-    private void driveWithAutoAngle(Rotation2d desiredHeading, double autoRotation) {
-        DriveSubsystem.aligntoHub(desiredHeading);
-        m_drive.drive(
-            -MathUtil.applyDeadband(
-                RobotContainer.m_driverController.getLeftY(), 
-                OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(
-                RobotContainer.m_driverController.getLeftX(), 
-                OIConstants.kDriveDeadband),
-            autoRotation,
-            true
-        );  
+
+
     }
     private void driveWithDriverInput(double autoRotation) {
         m_drive.drive(
@@ -183,6 +199,8 @@ public class AutoAlignC extends Command {
     @Override
     public void end(boolean interrupted) {
         m_drive.drive(0, 0, 0, true);
+        skipperIsControllingHimselfAgainOhNoOhCrapOhDarnOhDearWaitNoItsFineWeActuallyTrustHimIfHeDoesntDoAnythingDumbHaveFunSkipper = false;
+
     }
     
     @Override

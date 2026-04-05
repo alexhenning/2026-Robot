@@ -44,6 +44,16 @@ public final class Constants {
     public static final int kFrontRightTurningCanId = 4;
     public static final int kRearRightTurningCanId = 8;
 
+    public static final int kFrontLeftDrivingEncoder = 1;
+    public static final int kRearLeftDrivingEncoder = 5;
+    public static final int kFrontRightDrivingEncoder = 3;
+    public static final int kRearRightDrivingEncoder = 7;
+
+    public static final int kFrontLeftTurningEncoder = 2;
+    public static final int kRearLeftTurningEncoder = 6;
+    public static final int kFrontRightTurningEncoder = 4;
+    public static final int kRightRearTurningEncoder = 8;
+
     public static int kClimbMotorCANID = 16;
     public static int kIntakeTiltMotorCANID = 15;
   }
@@ -75,6 +85,12 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
     public static final boolean kGyroReversed = false;
+    public static final boolean fieldRelative = true;
+  }
+
+  public static final class GyroConstants {
+    public static final int kAlsoSS = 0;
+    public static final int kSS = 360;
   }
 
   public static final class ModuleConstants {
@@ -140,18 +156,15 @@ public final class Constants {
         Units.degreesToRadians(40.9 + 180); // 40.9 deg from horiz
   }
 
-public static final class ClimbPIDConstants {
+public static final class PIDConstants {
 
-  public static final int PIDmotor1 = 0;
-  public static final int PIDmotor2 = 0;
-  public static final double kI = 0;
-  public static final double kD = 0;
-  public static double kP;
+  public static final double kDriveRotationP = 0;
+  public static final double kDriveRotationI = 0;
+  public static final double kDriveRotationD = 0;
+  public static final double kDriveRotationT = 0;
+
   }
 
-public static double kD;
-public static double kP;
-public static double kI;
 
 
 public static final class HubCoords {
