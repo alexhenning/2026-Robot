@@ -158,10 +158,10 @@ public final class Constants {
 
 public static final class PIDConstants {
 
-  public static final double kDriveRotationP = 0;
-  public static final double kDriveRotationI = 0;
-  public static final double kDriveRotationD = 0;
-  public static final double kDriveRotationT = 0;
+  public static final double kDriveRotationP = 0.0016 ;
+  public static final double kDriveRotationI = 0.00000;
+  public static final double kDriveRotationD = 0.0000;
+  public static final double kDriveRotationT = 0.0000;
 
   }
 

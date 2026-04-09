@@ -9,7 +9,6 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 
 import java.io.IOException;
-import java.net.ContentHandler;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
@@ -17,7 +16,6 @@ import org.photonvision.*;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
@@ -37,7 +35,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -52,7 +49,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   static SwerveDrivePoseEstimator m_poseEstimator;
   public PIDController drivePidController;
-
+  //private static DriveSubsystem instance;
 
   // Create MAXSwerveModules
   public static final MAXSwerveModule m_frontLeft = 
@@ -160,19 +157,16 @@ public class DriveSubsystem extends SubsystemBase {
     new Pose2d()  // Initial pose
 );
     drivePidController = new PIDController(0, 0, 0);
+  
 
 
-    
-
-  }
+  
 
 
-  // public static DriveSubsystem getInstance() {
-  //   if (instance == null) {
-  //     instance = new DriveSubsystem();
-  //   }
-  //   return instance;
-  // }
+
+
+
+    }
 
 
   @Override
@@ -194,9 +188,7 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearLeft.getPosition(),
           m_rearRight.getPosition() 
         });
-        m_poseEstimator.addVisionMeasurement(RobotContainer.rc_autoAlignC.visionPose,
-        RobotContainer.rc_autoAlignC.visionTimestamp
-        );
+
 
         Pose2d currentPose = m_poseEstimator.getEstimatedPosition();
 
@@ -368,6 +360,7 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.setDesiredState(new SwerveModuleState(0, desiredHeading));
           
   }
+
 
 
 

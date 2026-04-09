@@ -40,6 +40,7 @@ import edu.wpi.first.math.controller.PIDController;
  */
 public class AutoAlignC extends Command {
     public Rotation2d desiredHeading;
+    public double rcdesiredheading;
     public double desiredState;
     public Pose2d visionPose;
     public double visionTimestamp;
@@ -69,16 +70,16 @@ public class AutoAlignC extends Command {
 
     }
     public class PID {
-    public static PIDController rotationPID = getRotationPID();
-    private static PIDController getRotationPID() {
-        PIDController pid = new PIDController(
-                Constants.PIDConstants.kDriveRotationP,
-                Constants.PIDConstants.kDriveRotationI,
-                Constants.PIDConstants.kDriveRotationD);
-        pid.setTolerance(Constants.PIDConstants.kDriveRotationT);
-        pid.enableContinuousInput(Constants.GyroConstants.kAlsoSS, Constants.GyroConstants.kSS);
-        return pid;
-    }
+        public static PIDController rotationPID = getRotationPID();
+        private static PIDController getRotationPID() {
+            PIDController pid = new PIDController(
+                    Constants.PIDConstants.kDriveRotationP,
+                    Constants.PIDConstants.kDriveRotationI,
+                    Constants.PIDConstants.kDriveRotationD);
+            pid.setTolerance(Constants.PIDConstants.kDriveRotationT);
+            pid.enableContinuousInput(Constants.GyroConstants.kAlsoSS, Constants.GyroConstants.kSS);
+            return pid;
+        }
 }
 
 
@@ -98,73 +99,76 @@ public class AutoAlignC extends Command {
     @Override
     public void execute() {
         // === STEP 1: Update offset when new vision data arrives ===
-        Optional<EstimatedRobotPose> visionResult = m_vision.getRobotPose();
+        // Optional<EstimatedRobotPose> visionResult = m_vision.getRobotPose();
+        // if (visionResult.isEmpty()) {
+        //     SmartDashboard.putBoolean("Apriltag Detected?", false);
+        // }
         
-        if (visionResult.isPresent()) {
-            EstimatedRobotPose estimatedVisionPose = visionResult.get();
-            Pose2d visionPose = estimatedVisionPose.estimatedPose.toPose2d();
-            double visionTimestamp = estimatedVisionPose.timestampSeconds;
+        // else if (!visionResult.isEmpty()) {
+        // if (visionResult.isPresent()) {
+        //     EstimatedRobotPose estimatedVisionPose = visionResult.get();
+        //     Pose2d visionPose = estimatedVisionPose.estimatedPose.toPose2d();
+        //     double visionTimestamp = estimatedVisionPose.timestampSeconds;
             
-            // Only update if this is NEW vision data
-            if (visionTimestamp > m_lastVisionTimestamp) {
-                m_lastVisionTimestamp = visionTimestamp;
+        //     // Only update if this is NEW vision data
+        //     if (visionTimestamp > m_lastVisionTimestamp) {
+        //         m_lastVisionTimestamp = visionTimestamp;
                 
-                // Vision tells us our TRUE heading in field coordinates
-                Rotation2d visionHeading = visionPose.getRotation();
+        //         // Vision tells us our TRUE heading in field coordinates
+        //         Rotation2d visionHeading = visionPose.getRotation();
                 
-                // IMU tells us heading in its own reference frame
-                Rotation2d imuHeading = Rotation2d.fromDegrees(m_drive.getHeading());
+        //         // IMU tells us heading in its own reference frame
+        //         Rotation2d imuHeading = Rotation2d.fromDegrees(m_drive.getHeading());
                 
-                // Calculate the magic offset: field = imu + offset
-                // So: offset = field - imu
-                m_imuToFieldOffset = visionHeading.minus(imuHeading);
-                m_hasValidOffset = true;
+        //         // Calculate the magic offset: field = imu + offset
+        //         // So: offset = field - imu
+        //         m_imuToFieldOffset = visionHeading.minus(imuHeading);
+        //         m_hasValidOffset = true;
                 
-                SmartDashboard.putNumber("Vision/IMU Offset (deg)", m_imuToFieldOffset.getDegrees());
-            }
-        }
+        //         SmartDashboard.putNumber("Vision/IMU Offset (deg)", m_imuToFieldOffset.getDegrees());
+        //     }
+        // }
         
-        // === STEP 2: Check if we have valid calibration ===
-        if (!m_hasValidOffset) {
-            // No vision yet - can't auto-align, just pass through driver input
-            driveWithDriverInput(0);  // No auto-rotation
-            return;
-        }
+        // // === STEP 2: Check if we have valid calibration ===
+        // if (!m_hasValidOffset) {
+        //     // No vision yet - can't auto-align, just pass through driver input
+        //     driveWithDriverInput(0);  // No auto-rotation
+        //     return;
+        // }
         
-        // Check for stale vision (optional safety)
-        double timeSinceVision = Timer.getFPGATimestamp() - m_lastVisionTimestamp;
-        if (timeSinceVision > kVisionTimeoutSeconds) {
-            SmartDashboard.putBoolean("AutoAlign/VisionStale", true);
-            // Could choose to stop auto-aligning here, or keep using last offset
-        }
+        // // Check for stale vision (optional safety)
+        // double timeSinceVision = Timer.getFPGATimestamp() - m_lastVisionTimestamp;
+        // if (timeSinceVision > kVisionTimeoutSeconds) {
+        //     SmartDashboard.putBoolean("AutoAlign/VisionStale", true);
+        //     // Could choose to stop auto-aligning here, or keep using last offset
+        // }
         
-        // === STEP 3: Estimate current field heading using IMU + offset ===
-        // This runs at full robot speed (~50Hz) even when vision is slow!
-        Rotation2d imuHeading = Rotation2d.fromDegrees(m_drive.getHeading());
-        Rotation2d estimatedFieldHeading = imuHeading.plus(m_imuToFieldOffset);
+        // // === STEP 3: Estimate current field heading using IMU + offset ===
+        // // This runs at full robot speed (~50Hz) even when vision is slow!
+        // Rotation2d imuHeading = Rotation2d.fromDegrees(m_drive.getHeading());
+        // Rotation2d estimatedFieldHeading = imuHeading.plus(m_imuToFieldOffset);
         
-        SmartDashboard.putNumber("AutoAlign/EstimatedHeading", estimatedFieldHeading.getDegrees());
+        // SmartDashboard.putNumber("AutoAlign/EstimatedHeading", estimatedFieldHeading.getDegrees());
         
-        // === STEP 4: Calculate desired heading to target ===
-        Translation2d targetPos = getTargetPosition();  // Hub location
-        Translation2d robotPos = getLastKnownPosition(); // From vision
+        // // === STEP 4: Calculate desired heading to target ===
+        // Translation2d targetPos = getTargetPosition();  // Hub location
+        // Translation2d robotPos = getLastKnownPosition(); // From vision
         
-        desiredHeading = targetPos.minus(robotPos).getAngle();
+        // desiredHeading = targetPos.minus(robotPos).getAngle();
+
         
-        // === STEP 5: Compute error and rotation command ===
-        Rotation2d headingError = desiredHeading.minus(estimatedFieldHeading);
-        double rotationCommand = MathUtil.clamp(headingError.getRadians() * kP, -1.0, 1.0);
+        // // === STEP 5: Compute error and rotation command ===
+        // Rotation2d headingError = desiredHeading.minus(estimatedFieldHeading);
+        // double rotationCommand = MathUtil.clamp(headingError.getRadians() * kP, -1.0, 1.0);
         
-        SmartDashboard.putNumber("AutoAlign/HeadingError", headingError.getDegrees());
+        // SmartDashboard.putNumber("AutoAlign/HeadingError", headingError.getDegrees());
         
         // === STEP 6: Drive! ===
         //DriveSubsystem.aligntoHub(desiredHeading);
-        driveWithDriverInput(-PID.rotationPID.calculate(DriveSubsystem.m_gyro.getYaw().getValue().in(Units.Degrees)-360));
+        driveWithDriverInput(-PID.rotationPID.calculate(DriveSubsystem.m_gyro.getYaw().getValue().in(Units.Degrees)));
         skipperIsControllingHimselfAgainOhNoOhCrapOhDarnOhDearWaitNoItsFineWeActuallyTrustHimIfHeDoesntDoAnythingDumbHaveFunSkipper = true;
-
-
-
     }
+//}
     private void driveWithDriverInput(double autoRotation) {
         m_drive.drive(
             -MathUtil.applyDeadband(

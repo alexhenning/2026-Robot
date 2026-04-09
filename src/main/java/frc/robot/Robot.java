@@ -22,7 +22,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import frc.robot.subsystems.DriveSubsystem;
 import org.photonvision.*;
 import org.photonvision.targeting.PhotonPipelineResult;
 import frc.robot.subsystems.*;
@@ -32,7 +31,10 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.RobotContainer;
 
 /**
@@ -48,7 +50,35 @@ public class Robot extends TimedRobot {
   private final RobotContainer m_robotContainer;
 
   public static double currenttime;
+  public Rotation2d desiredHeading;
+  public static double rcdesiredHeading;
+  public double desiredState;
+  public Pose2d visionPose;
+  public double visionTimestamp;
+  private PIDController turnController;
+  public boolean skipperIsControllingHimselfAgainOhNoOhCrapOhDarnOhDearWaitNoItsFineWeActuallyTrustHimIfHeDoesntDoAnythingDumbHaveFunSkipper;
+  // Sensor fusion state
+  private Rotation2d m_imuToFieldOffset = new Rotation2d();  // Calibration offset
+  private double m_lastVisionTimestamp = 0;
+  private boolean m_hasValidOffset = false;
+  public Optional<EstimatedRobotPose> visionResult;
+  public Rotation2d imuHeading;
+  public double rotationCommand;
+  public Rotation2d headingError;
+  public Translation2d robotPos;
+  public Translation2d targetPos;
+  public Rotation2d estimatedFieldHeading;
+  public double timeSinceVision;
+  public Rotation2d visionHeading;
+  public EstimatedRobotPose estimatedVisionPose;
+  public double time;
 
+    
+  // P controller gain (students: try a full PID!)
+  private static final double kP = 0.02;
+    
+  // How old can vision data be before we stop trusting it?
+  private static final double kVisionTimeoutSeconds = 0.5;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -80,7 +110,18 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    // boolean skipperIsControllingHimselfAgainOhNoOhCrapOhDarnOhDearWaitNoItsFineWeActuallyTrustHimIfHeDoesntDoAnythingDumbHaveFunSkipper = RobotContainer.rc_autoAlignC.skipperIsControllingHimselfAgainOhNoOhCrapOhDarnOhDearWaitNoItsFineWeActuallyTrustHimIfHeDoesntDoAnythingDumbHaveFunSkipper;
     
+    // if (skipperIsControllingHimselfAgainOhNoOhCrapOhDarnOhDearWaitNoItsFineWeActuallyTrustHimIfHeDoesntDoAnythingDumbHaveFunSkipper) {
+    //   SmartDashboard.putString("Auto Align Engaged?",  "YES");
+    // }
+    // else {
+    //   SmartDashboard.putString("Auto Align Engaged?",  "NO");
+    // }
+
+    SmartDashboard.putNumber("RCDesiredHeading", rcdesiredHeading);
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -120,8 +161,71 @@ public class Robot extends TimedRobot {
       double time = Timer.getFPGATimestamp();
       double currenttime = RobotContainer.rc_basicAutoC.starttime - time;
 
-    SmartDashboard.putNumber("Auto Timer: ", currenttime);
-  }
+      SmartDashboard.putNumber("Auto Timer: ", currenttime);
+      if (RobotContainer.rc_visionSS.getRobotPose() == null) {
+        SmartDashboard.putBoolean("Apriltag Detected", false);
+      }
+      else {
+      visionResult = RobotContainer.rc_visionSS.getRobotPose();
+      SmartDashboard.putBoolean("Apriltag Detected", true);
+            EstimatedRobotPose estimatedVisionPose = visionResult.get();
+            Pose2d visionPose = estimatedVisionPose.estimatedPose.toPose2d();
+            double visionTimestamp = estimatedVisionPose.timestampSeconds;
+            
+            // Only update if this is NEW vision data
+            if (visionTimestamp > m_lastVisionTimestamp) {
+                m_lastVisionTimestamp = visionTimestamp;
+                
+                // Vision tells us our TRUE heading in field coordinates
+                Rotation2d visionHeading = visionPose.getRotation();
+                
+                // IMU tells us heading in its own reference frame
+                imuHeading = Rotation2d.fromDegrees(RobotContainer.m_robotDrive.getHeading());
+                
+                // Calculate the magic offset: field = imu + offset
+                // So: offset = field - imu
+                m_imuToFieldOffset = visionHeading.minus(imuHeading);
+                m_hasValidOffset = true;
+                
+                SmartDashboard.putNumber("Vision/IMU Offset (deg)", m_imuToFieldOffset.getDegrees());
+            
+        }
+        
+        // === STEP 2: Check if we have valid calibration ===
+        
+        // Check for stale vision (optional safety)
+        double timeSinceVision = Timer.getFPGATimestamp() - m_lastVisionTimestamp;
+        if (timeSinceVision > kVisionTimeoutSeconds) {
+            SmartDashboard.putBoolean("AutoAlign/VisionStale", true);
+            // Could choose to stop auto-aligning here, or keep using last offset
+        }
+        
+        // === STEP 3: Estimate current field heading using IMU + offset ===
+        // This runs at full robot speed (~50Hz) even when vision is slow!
+        imuHeading = Rotation2d.fromDegrees(RobotContainer.m_robotDrive.getHeading());
+        Rotation2d estimatedFieldHeading = imuHeading.plus(m_imuToFieldOffset);
+        
+        SmartDashboard.putNumber("AutoAlign/EstimatedHeading", estimatedFieldHeading.getDegrees());
+        
+        // === STEP 4: Calculate desired heading to target ===
+        Translation2d targetPos = RobotContainer.rc_visionSS.getTargetPosition();  // Hub location
+        Translation2d robotPos = RobotContainer.rc_visionSS.getLastKnownPosition(); // From vision
+        
+        desiredHeading = targetPos.minus(robotPos).getAngle();
+        rcdesiredHeading = desiredHeading.getDegrees();
+
+        
+        // === STEP 5: Compute error and rotation command ===
+        Rotation2d headingError = desiredHeading.minus(estimatedFieldHeading);
+        double rotationCommand = MathUtil.clamp(headingError.getRadians() * kP, -1.0, 1.0);
+        
+        SmartDashboard.putNumber("AutoAlign/HeadingError", headingError.getDegrees());
+      }
+
+    }
+  
+     
+
 
   @Override
   public void teleopInit() {
@@ -157,7 +261,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // Calculate drivetrain commands from Joystick values
-    
         double forward = RobotContainer.m_driverController.getLeftY() * Constants.DriveConstants.kMaxLinearSpeed;
         double strafe = -RobotContainer.m_driverController.getLeftX() * Constants.DriveConstants.kMaxLinearSpeed;
         double turn = -RobotContainer.m_driverController.getRightX() * Constants.DriveConstants.kMaxAngularSpeed;
@@ -166,25 +269,67 @@ public class Robot extends TimedRobot {
 
 
         // Auto-align when requested
-     //   if (RobotContainer.m_driverController.a().getAsBoolean() && targetVisible) {
-            // Driver wants auto-alignment to tag 7
-            // And, tag 7 is in sight, so we can turn toward it.
-            // Override the driver's turn command with an automatic one that turns toward the tag.
-       //     turn = -1.0 * targetYaw * Constants.VisionConstants.visionTurnKP * Constants.DriveConstants.kMaxAngularSpeed;
-
-          // WILL NEED TO CHANGE VISION TURN KP VALUE IN CONSTANTS
-
-        
-        //climb if requested, and a tag is in sight
-        // else if (RobotContainer.m_driverController.povUp().getAsBoolean() == true && targetVisible == true);
-        //   new ClimbC(RobotContainer.rc_climbSS);
+      if (RobotContainer.rc_visionSS.getRobotPose() == null) {
+        SmartDashboard.putBoolean("Apriltag Detected?", false);
+      }
+      else {
+        SmartDashboard.putBoolean("Apriltag Detected?", true);
   
-        
-          // Command drivetrain motors based on target speeds
-          //DriveSubsystem.drive(forward, strafe, turn);
+          visionResult = RobotContainer.rc_visionSS.getRobotPose();
+          estimatedVisionPose = visionResult.get();
+          visionPose = estimatedVisionPose.estimatedPose.toPose2d();
+          visionTimestamp = estimatedVisionPose.timestampSeconds;
+          
+          // Only update if this is NEW vision data
+          if (visionTimestamp > m_lastVisionTimestamp) {
+              m_lastVisionTimestamp = visionTimestamp;
+              
+              // Vision tells us our TRUE heading in field coordinates
+              visionHeading = visionPose.getRotation();
+              
+              // IMU tells us heading in its own reference frame
+              imuHeading = Rotation2d.fromDegrees(RobotContainer.m_robotDrive.getHeading());
+              
+              // Calculate the magic offset: field = imu + offset
+              // So: offset = field - imu
+              m_imuToFieldOffset = visionHeading.minus(imuHeading);
+              m_hasValidOffset = true;
+              
+              SmartDashboard.putNumber("Vision/IMU Offset (deg)", m_imuToFieldOffset.getDegrees());
+          }
 
-    //Put debug information to the dashboard
-    //SmartDashboard.putBoolean("Vision Target Visible", targetVisible);
+      
+      
+      // === STEP 2: Check if we have valid calibration ===
+      
+      // Check for stale vision (optional safety)
+      timeSinceVision = Timer.getFPGATimestamp() - m_lastVisionTimestamp;
+      if (timeSinceVision > kVisionTimeoutSeconds) {
+          SmartDashboard.putBoolean("AutoAlign/VisionStale", true);
+          // Could choose to stop auto-aligning here, or keep using last offset
+      }
+      
+      // === STEP 3: Estimate current field heading using IMU + offset ===
+      // This runs at full robot speed (~50Hz) even when vision is slow!
+      imuHeading = Rotation2d.fromDegrees(RobotContainer.m_robotDrive.getHeading());
+      estimatedFieldHeading = imuHeading.plus(m_imuToFieldOffset);
+      
+      SmartDashboard.putNumber("AutoAlign/EstimatedHeading", estimatedFieldHeading.getDegrees());
+      
+      // === STEP 4: Calculate desired heading to target ===
+      targetPos = RobotContainer.rc_visionSS.getTargetPosition();  // Hub location
+      robotPos = RobotContainer.rc_visionSS.getLastKnownPosition(); // From vision
+      
+      desiredHeading = targetPos.minus(robotPos).getAngle();
+      rcdesiredHeading = desiredHeading.getDegrees();
+
+      
+      // === STEP 5: Compute error and rotation command ===
+      headingError = desiredHeading.minus(estimatedFieldHeading);
+       rotationCommand = MathUtil.clamp(headingError.getRadians() * kP, -1.0, 1.0);
+      
+      SmartDashboard.putNumber("AutoAlign/HeadingError", headingError.getDegrees());
+    }
     }
 
   @Override
@@ -204,4 +349,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
+
+
+
+  
+
 }

@@ -11,13 +11,17 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.*;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -38,6 +42,23 @@ public class VisionSS extends SubsystemBase{
     public PhotonPipelineResult result;
     public double xDistanceToHub;
     public double yDistanceToHub;
+    public Rotation2d desiredHeading;
+    public double rcdesiredHeading = 0;
+    public double desiredState;
+    public Pose2d visionPose;
+    public double visionTimestamp;
+    private PIDController turnController;
+    public boolean skipperIsControllingHimselfAgainOhNoOhCrapOhDarnOhDearWaitNoItsFineWeActuallyTrustHimIfHeDoesntDoAnythingDumbHaveFunSkipper;
+    // Sensor fusion state
+    private Rotation2d m_imuToFieldOffset = new Rotation2d();  // Calibration offset
+    private double m_lastVisionTimestamp = 0;
+    private boolean m_hasValidOffset = false;
+    
+    // P controller gain (students: try a full PID!)
+    private static final double kP = 0.02;
+    
+    // How old can vision data be before we stop trusting it?
+    public static final double kVisionTimeoutSeconds = 0.5;
 
 
 
@@ -51,7 +72,7 @@ public class VisionSS extends SubsystemBase{
     public void periodic() {
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
         PhotonPipelineResult result;
-
+       
         if (!results.isEmpty()) {
             result = results.get(results.size() - 1);
         } else {
@@ -98,6 +119,7 @@ public class VisionSS extends SubsystemBase{
             } 
 
         } 
+        
     }
 
     public Optional<EstimatedRobotPose> getRobotPose() {
@@ -108,5 +130,24 @@ public class VisionSS extends SubsystemBase{
         SmartDashboard.putNumber("getDistanceToHub", distanceToHub);
         return distanceToHub;
     }
+        public Translation2d getTargetPosition() {
+        // Use alliance color to pick target
+        if (RobotContainer.rc_visionSS.isblue) {
+            return new Translation2d(Constants.HubCoords.blueHubX, Constants.HubCoords.blueHubY);
+        } else {
+            return new Translation2d(Constants.HubCoords.redHubX, Constants.HubCoords.redHubY);
+        }
+    }
+    
+    public Translation2d getLastKnownPosition() {
+        // Use last vision position for target angle calculation
+        // (Could also use odometry here for even better fusion)
+        return new Translation2d(
+            RobotContainer.rc_visionSS.RobotX,
+            RobotContainer.rc_visionSS.RobotY
+        );
+    }
+
+    
 }
      
