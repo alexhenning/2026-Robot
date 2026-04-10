@@ -268,68 +268,8 @@ public class Robot extends TimedRobot {
 
 
 
-        // Auto-align when requested
-      if (RobotContainer.rc_visionSS.getRobotPose() == null) {
-        SmartDashboard.putBoolean("Apriltag Detected?", false);
-      }
-      else {
-        SmartDashboard.putBoolean("Apriltag Detected?", true);
-  
-          visionResult = RobotContainer.rc_visionSS.getRobotPose();
-          estimatedVisionPose = visionResult.get();
-          visionPose = estimatedVisionPose.estimatedPose.toPose2d();
-          visionTimestamp = estimatedVisionPose.timestampSeconds;
-          
-          // Only update if this is NEW vision data
-          if (visionTimestamp > m_lastVisionTimestamp) {
-              m_lastVisionTimestamp = visionTimestamp;
-              
-              // Vision tells us our TRUE heading in field coordinates
-              visionHeading = visionPose.getRotation();
-              
-              // IMU tells us heading in its own reference frame
-              imuHeading = Rotation2d.fromDegrees(RobotContainer.m_robotDrive.getHeading());
-              
-              // Calculate the magic offset: field = imu + offset
-              // So: offset = field - imu
-              m_imuToFieldOffset = visionHeading.minus(imuHeading);
-              m_hasValidOffset = true;
-              
-              SmartDashboard.putNumber("Vision/IMU Offset (deg)", m_imuToFieldOffset.getDegrees());
-          }
-
-      
-      
-      // === STEP 2: Check if we have valid calibration ===
-      
-      // Check for stale vision (optional safety)
-      timeSinceVision = Timer.getFPGATimestamp() - m_lastVisionTimestamp;
-      if (timeSinceVision > kVisionTimeoutSeconds) {
-          SmartDashboard.putBoolean("AutoAlign/VisionStale", true);
-          // Could choose to stop auto-aligning here, or keep using last offset
-      }
-      
-      // === STEP 3: Estimate current field heading using IMU + offset ===
-      // This runs at full robot speed (~50Hz) even when vision is slow!
-      imuHeading = Rotation2d.fromDegrees(RobotContainer.m_robotDrive.getHeading());
-      estimatedFieldHeading = imuHeading.plus(m_imuToFieldOffset);
-      
-      SmartDashboard.putNumber("AutoAlign/EstimatedHeading", estimatedFieldHeading.getDegrees());
-      
-      // === STEP 4: Calculate desired heading to target ===
-      targetPos = RobotContainer.rc_visionSS.getTargetPosition();  // Hub location
-      robotPos = RobotContainer.rc_visionSS.getLastKnownPosition(); // From vision
-      
-      desiredHeading = targetPos.minus(robotPos).getAngle();
-      rcdesiredHeading = desiredHeading.getDegrees();
-
-      
-      // === STEP 5: Compute error and rotation command ===
-      headingError = desiredHeading.minus(estimatedFieldHeading);
-       rotationCommand = MathUtil.clamp(headingError.getRadians() * kP, -1.0, 1.0);
-      
-      SmartDashboard.putNumber("AutoAlign/HeadingError", headingError.getDegrees());
-    }
+        // Auto-align heading calculation moved to AutoAlignC.execute()
+        // The command now owns the full vision → heading → PID pipeline.
     }
 
   @Override

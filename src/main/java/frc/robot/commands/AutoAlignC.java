@@ -41,7 +41,6 @@ import edu.wpi.first.math.controller.PIDController;
 public class AutoAlignC extends Command {
     public Rotation2d desiredHeading;
     public double rcdesiredheading;
-    public double desiredState;
     public Pose2d visionPose;
     public double visionTimestamp;
     private PIDController turnController;
@@ -59,15 +58,13 @@ public class AutoAlignC extends Command {
     // How old can vision data be before we stop trusting it?
     private static final double kVisionTimeoutSeconds = 0.5;
     
-    public AutoAlignC(DriveSubsystem drive, VisionSS vision, double desiredState) {
+    public AutoAlignC(DriveSubsystem drive, VisionSS vision) {
         super();
         m_drive = drive;
         m_vision = vision;
         addRequirements(drive); 
         turnController = new PIDController(0, 0, 0);
         turnController.setTolerance(0);
-        this.desiredState = desiredState;
-
     }
     public class PID {
         public static PIDController rotationPID = getRotationPID();
@@ -87,85 +84,60 @@ public class AutoAlignC extends Command {
     @Override
     public void initialize() {
         m_hasValidOffset = false;  // Recalibrate when command starts
+        m_lastVisionTimestamp = 0;
         SmartDashboard.putNumber("Vision/IMU Offset (deg)", 0);
         SmartDashboard.putNumber("AutoAlign/EstimatedHeading", 0);
         SmartDashboard.putNumber("AutoAlign/HeadingError", 0);
-        PID.rotationPID.setSetpoint(desiredState);
-        super.initialize();
-
-
+        SmartDashboard.putNumber("AutoAlign/TimeSinceVision", 0);
     }
     
     @Override
     public void execute() {
         // === STEP 1: Update offset when new vision data arrives ===
-        // Optional<EstimatedRobotPose> visionResult = m_vision.getRobotPose();
-        // if (visionResult.isEmpty()) {
-        //     SmartDashboard.putBoolean("Apriltag Detected?", false);
-        // }
-        
-        // else if (!visionResult.isEmpty()) {
-        // if (visionResult.isPresent()) {
-        //     EstimatedRobotPose estimatedVisionPose = visionResult.get();
-        //     Pose2d visionPose = estimatedVisionPose.estimatedPose.toPose2d();
-        //     double visionTimestamp = estimatedVisionPose.timestampSeconds;
-            
-        //     // Only update if this is NEW vision data
-        //     if (visionTimestamp > m_lastVisionTimestamp) {
-        //         m_lastVisionTimestamp = visionTimestamp;
-                
-        //         // Vision tells us our TRUE heading in field coordinates
-        //         Rotation2d visionHeading = visionPose.getRotation();
-                
-        //         // IMU tells us heading in its own reference frame
-        //         Rotation2d imuHeading = Rotation2d.fromDegrees(m_drive.getHeading());
-                
-        //         // Calculate the magic offset: field = imu + offset
-        //         // So: offset = field - imu
-        //         m_imuToFieldOffset = visionHeading.minus(imuHeading);
-        //         m_hasValidOffset = true;
-                
-        //         SmartDashboard.putNumber("Vision/IMU Offset (deg)", m_imuToFieldOffset.getDegrees());
-        //     }
-        // }
-        
-        // // === STEP 2: Check if we have valid calibration ===
-        // if (!m_hasValidOffset) {
-        //     // No vision yet - can't auto-align, just pass through driver input
-        //     driveWithDriverInput(0);  // No auto-rotation
-        //     return;
-        // }
-        
-        // // Check for stale vision (optional safety)
-        // double timeSinceVision = Timer.getFPGATimestamp() - m_lastVisionTimestamp;
-        // if (timeSinceVision > kVisionTimeoutSeconds) {
-        //     SmartDashboard.putBoolean("AutoAlign/VisionStale", true);
-        //     // Could choose to stop auto-aligning here, or keep using last offset
-        // }
-        
-        // // === STEP 3: Estimate current field heading using IMU + offset ===
-        // // This runs at full robot speed (~50Hz) even when vision is slow!
-        // Rotation2d imuHeading = Rotation2d.fromDegrees(m_drive.getHeading());
-        // Rotation2d estimatedFieldHeading = imuHeading.plus(m_imuToFieldOffset);
-        
-        // SmartDashboard.putNumber("AutoAlign/EstimatedHeading", estimatedFieldHeading.getDegrees());
-        
-        // // === STEP 4: Calculate desired heading to target ===
-        // Translation2d targetPos = getTargetPosition();  // Hub location
-        // Translation2d robotPos = getLastKnownPosition(); // From vision
-        
-        // desiredHeading = targetPos.minus(robotPos).getAngle();
+        Optional<EstimatedRobotPose> visionResult = m_vision.getRobotPose();
 
-        
-        // // === STEP 5: Compute error and rotation command ===
-        // Rotation2d headingError = desiredHeading.minus(estimatedFieldHeading);
-        // double rotationCommand = MathUtil.clamp(headingError.getRadians() * kP, -1.0, 1.0);
-        
-        // SmartDashboard.putNumber("AutoAlign/HeadingError", headingError.getDegrees());
-        
-        // === STEP 6: Drive! ===
-        //DriveSubsystem.aligntoHub(desiredHeading);
-        driveWithDriverInput(-PID.rotationPID.calculate(DriveSubsystem.m_gyro.getYaw().getValue().in(Units.Degrees)));
+        if (visionResult != null && visionResult.isPresent()) {
+            EstimatedRobotPose estimatedVisionPose = visionResult.get();
+            Pose2d visionPose = estimatedVisionPose.estimatedPose.toPose2d();
+            double visionTimestamp = estimatedVisionPose.timestampSeconds;
+
+            if (visionTimestamp > m_lastVisionTimestamp) {
+                m_lastVisionTimestamp = visionTimestamp;
+                Rotation2d visionHeading = visionPose.getRotation();
+                Rotation2d imuHeading = Rotation2d.fromDegrees(m_drive.getHeading());
+                m_imuToFieldOffset = visionHeading.minus(imuHeading);
+                m_hasValidOffset = true;
+            }
+        }
+
+        // === STEP 2: Always show time since last vision ===
+        double timeSinceVision = Timer.getFPGATimestamp() - m_lastVisionTimestamp;
+        SmartDashboard.putNumber("AutoAlign/TimeSinceVision", timeSinceVision);
+        SmartDashboard.putNumber("Vision/IMU Offset (deg)", m_imuToFieldOffset.getDegrees());
+
+        if (!m_hasValidOffset) {
+            driveWithDriverInput(0);
+            return;
+        }
+
+        // === STEP 3: Estimate current field heading using IMU + offset ===
+        Rotation2d imuHeading = Rotation2d.fromDegrees(m_drive.getHeading());
+        Rotation2d estimatedFieldHeading = imuHeading.plus(m_imuToFieldOffset);
+        SmartDashboard.putNumber("AutoAlign/EstimatedHeading", estimatedFieldHeading.getDegrees());
+
+        // === STEP 4: Calculate desired heading to target ===
+        Translation2d targetPos = m_vision.getTargetPosition();
+        Translation2d robotPos = m_vision.getLastKnownPosition();
+        desiredHeading = targetPos.minus(robotPos).getAngle();
+        Robot.rcdesiredHeading = desiredHeading.getDegrees();
+
+        // === STEP 5: Set PID setpoint live and drive ===
+        PID.rotationPID.setSetpoint(desiredHeading.getDegrees());
+        SmartDashboard.putNumber("AutoAlign/HeadingError",
+            desiredHeading.minus(estimatedFieldHeading).getDegrees());
+
+        driveWithDriverInput(-PID.rotationPID.calculate(
+            DriveSubsystem.m_gyro.getYaw().getValue().in(Units.Degrees)));
         skipperIsControllingHimselfAgainOhNoOhCrapOhDarnOhDearWaitNoItsFineWeActuallyTrustHimIfHeDoesntDoAnythingDumbHaveFunSkipper = true;
     }
 //}
